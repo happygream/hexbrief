@@ -33,10 +33,13 @@
     },
     "files": [
       "electron/**/*",
-      "out/**/*",
       "package.json"
     ],
     "extraResources": [
+      {
+        "from": "out",
+        "to": "out"
+      },
       {
         "from": "public",
         "to": "public"
