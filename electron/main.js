@@ -19,7 +19,6 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      // No remote module, no node in renderer
     },
     show: false,
   });
@@ -27,13 +26,14 @@ function createWindow() {
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
   } else {
-    // Static export — load index.html directly
-    mainWindow.loadFile(path.join(__dirname, '..', 'out', 'index.html'));
+    // app.getAppPath() reliably returns the root of the packaged app
+    const indexPath = path.join(app.getAppPath(), 'out', 'index.html');
+    mainWindow.loadFile(indexPath);
   }
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
-  // All external links open in the system browser, not Electron
+  // Open all external links in system browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
@@ -48,6 +48,11 @@ function createWindow() {
     }
   });
 
+  // Log any load errors to help debug blank screens
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDesc, url) => {
+    console.error('Failed to load:', url, errorCode, errorDesc);
+  });
+
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
@@ -58,9 +63,7 @@ function buildMenu() {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideOthers' },
-        { role: 'unhide' },
+        { role: 'hide' }, { role: 'hideOthers' }, { role: 'unhide' },
         { type: 'separator' },
         { role: 'quit' },
       ],
