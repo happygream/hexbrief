@@ -1,0 +1,190 @@
+{
+  "name": "hexbrief",
+  "version": "1.0.0",
+  "description": "Your personal morning dashboard",
+  "author": {
+    "name": "HexBrief",
+    "email": "hello@hexbrief.co"
+  },
+  "homepage": "https://hexbrief.co",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "export": "next build && next export",
+    "electron:dev": "concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "next build && electron-builder",
+    "electron:build:win": "next build && electron-builder --win --publish never",
+    "electron:build:mac": "next build && electron-builder --mac --publish never",
+    "electron:build:linux": "next build && electron-builder --linux --publish never",
+    "dist": "next build && electron-builder --win --mac --linux"
+  },
+  "build": {
+    "appId": "co.hexbrief.app",
+    "productName": "HexBrief",
+    "copyright": "Copyright 2026 HexBrief",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "electron/**/*",
+      "out/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "public",
+        "to": "public"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build-resources/icon.ico",
+      "publisherName": "HexBrief",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "HexBrief",
+      "uninstallDisplayName": "HexBrief",
+      "installerIcon": "build-resources/icon.ico",
+      "uninstallerIcon": "build-resources/icon.ico",
+      "installerHeaderIcon": "build-resources/icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "menuCategory": "HexBrief",
+      "include": "build-resources/installer.nsh",
+      "artifactName": "HexBrief-Setup-${version}-${arch}.exe"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build-resources/icon.icns",
+      "category": "public.app-category.productivity",
+      "darkModeSupport": true,
+      "artifactName": "HexBrief-${version}-${arch}.dmg"
+    },
+    "dmg": {
+      "title": "HexBrief ${version}",
+      "background": "build-resources/dmg-background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 140,
+          "y": 180,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 180,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build-resources/icon.png",
+      "category": "Utility",
+      "description": "Your personal morning dashboard",
+      "artifactName": "HexBrief-${version}-${arch}.${ext}"
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libuuid1"
+      ]
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "yourusername",
+      "repo": "hexbrief",
+      "releaseType": "release"
+    }
+  },
+  "dependencies": {
+    "lucide-react": "^1.16.0",
+    "next": "16.2.6",
+    "next-pwa": "^5.6.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "wait-on": "^7.2.0"
+  }
+}
