@@ -72,7 +72,6 @@
       "installerHeaderIcon": "build-resources/icon.ico",
       "deleteAppDataOnUninstall": false,
       "menuCategory": "HexBrief",
-      "include": "build-resources/installer.nsh",
       "artifactName": "HexBrief-Setup-${version}-${arch}.exe"
     },
     "mac": {
