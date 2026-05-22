@@ -78,13 +78,6 @@
     "mac": {
       "target": [
         {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
           "target": "zip",
           "arch": [
             "x64",
@@ -95,28 +88,7 @@
       "icon": "build-resources/icon.icns",
       "category": "public.app-category.productivity",
       "darkModeSupport": true,
-      "artifactName": "HexBrief-${version}-${arch}.dmg"
-    },
-    "dmg": {
-      "title": "HexBrief ${version}",
-      "background": "build-resources/dmg-background.png",
-      "window": {
-        "width": 540,
-        "height": 380
-      },
-      "contents": [
-        {
-          "x": 140,
-          "y": 180,
-          "type": "file"
-        },
-        {
-          "x": 400,
-          "y": 180,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+      "artifactName": "HexBrief-${version}-${arch}-mac.zip"
     },
     "linux": {
       "target": [
