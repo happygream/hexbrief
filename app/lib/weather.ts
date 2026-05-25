@@ -11,17 +11,10 @@ export interface WeatherData {
   visibility: number;
 }
 
-interface LocationData {
-  city: string;
-  country: string;
-  lat: number;
-  lon: number;
-}
-
-async function getLocation(): Promise<LocationData> {
+async function getLocationFromIP(): Promise<{ city: string; country: string; lat: number; lon: number }> {
   try {
     const res = await fetch('https://ip-api.com/json/?fields=city,country,lat,lon');
-    if (!res.ok) throw new Error('Location failed');
+    if (!res.ok) throw new Error();
     const d = await res.json();
     return { city: d.city || 'Unknown', country: d.country || '', lat: d.lat, lon: d.lon };
   } catch {
@@ -29,28 +22,39 @@ async function getLocation(): Promise<LocationData> {
   }
 }
 
-export async function fetchWeather(cityOverride?: string): Promise<WeatherData> {
-  const loc = await getLocation();
+export async function fetchWeather(cityOverride?: string, latOverride?: number, lonOverride?: number): Promise<WeatherData> {
+  let lat: number, lon: number, city: string, country: string;
 
-  // If user has set a city, geocode it via Open-Meteo geocoding API
-  let lat = loc.lat;
-  let lon = loc.lon;
-  let city = loc.city;
-  let country = loc.country;
-
-  if (cityOverride && cityOverride.trim()) {
+  if (latOverride && lonOverride) {
+    lat = latOverride; lon = lonOverride;
+    // Reverse geocode via Open-Meteo
     try {
-      const geo = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityOverride)}&count=1`
-      );
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const d = await res.json();
+      city = d.address?.city || d.address?.town || d.address?.village || 'Unknown';
+      country = d.address?.country || '';
+    } catch {
+      city = 'Your location'; country = '';
+    }
+  } else if (cityOverride && cityOverride.trim()) {
+    try {
+      const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityOverride)}&count=1`);
       const gd = await geo.json();
       if (gd.results?.[0]) {
         lat = gd.results[0].latitude;
         lon = gd.results[0].longitude;
         city = gd.results[0].name;
         country = gd.results[0].country || '';
+      } else {
+        throw new Error('City not found');
       }
-    } catch {}
+    } catch {
+      const loc = await getLocationFromIP();
+      lat = loc.lat; lon = loc.lon; city = loc.city; country = loc.country;
+    }
+  } else {
+    const loc = await getLocationFromIP();
+    lat = loc.lat; lon = loc.lon; city = loc.city; country = loc.country;
   }
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code&wind_speed_unit=ms`;
@@ -64,8 +68,7 @@ export async function fetchWeather(cityOverride?: string): Promise<WeatherData> 
     feels_like: Math.round(c.apparent_temperature),
     description: weatherDescription(c.weather_code),
     weatherCode: c.weather_code,
-    city,
-    country,
+    city, country,
     humidity: c.relative_humidity_2m,
     wind: Math.round(c.wind_speed_10m),
     pressure: Math.round(c.surface_pressure),

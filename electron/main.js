@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, nativeTheme, session, ipcMain } = require('electron');
+const { app, BrowserWindow, shell, nativeTheme, session, ipcMain, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
@@ -20,12 +20,10 @@ function findIndexHtml() {
   return candidates[0];
 }
 
-// Fetch a URL natively in Node — no CORS restrictions
 function nodeFetch(url) {
   return new Promise((resolve, reject) => {
     const lib = url.startsWith('https') ? https : http;
     const req = lib.get(url, { timeout: 8000, headers: { 'User-Agent': 'HexBrief/1.0' } }, (res) => {
-      // Follow redirects
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         return nodeFetch(res.headers.location).then(resolve).catch(reject);
       }
@@ -38,17 +36,11 @@ function nodeFetch(url) {
   });
 }
 
-// Parse RSS/Atom XML and return items
 function parseRSS(xml, feedUrl) {
   const items = [];
   try {
-    // Extract source name from feed URL
     let sourceName = feedUrl;
     try { sourceName = new URL(feedUrl).hostname.replace('www.', '').replace('feeds.', ''); } catch {}
-
-    // Simple regex-based XML parser — no DOM available in main process
-    const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
-    const entryRegex = /<entry[\s>]([\s\S]*?)<\/entry>/gi;
 
     function getTag(str, tag) {
       const patterns = [
@@ -68,45 +60,37 @@ function parseRSS(xml, feedUrl) {
     }
 
     function extractImage(str) {
-      // media:content
       let m = str.match(/<media:content[^>]+url=["']([^"']+)["'][^>]*medium=["']image["']/i);
       if (!m) m = str.match(/<media:content[^>]+medium=["']image["'][^>]*url=["']([^"']+)["']/i);
       if (m) return m[1];
-      // media:thumbnail
       m = str.match(/<media:thumbnail[^>]+url=["']([^"']+)["']/i);
       if (m) return m[1];
-      // enclosure image
       m = str.match(/<enclosure[^>]+type=["']image\/[^"']*["'][^>]+url=["']([^"']+)["']/i);
       if (!m) m = str.match(/<enclosure[^>]+url=["']([^"']+)["'][^>]*type=["']image\/[^"']*["']/i);
       if (m) return m[1];
-      // img in description
       m = str.match(/<img[^>]+src=["']([^"']+)["']/i);
       if (m) return m[1];
       return '';
     }
 
     function stripHtml(str) {
-      return str.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+      return str.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
     }
 
-    // Try RSS items first
-    let match;
-    let count = 0;
+    const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
+    const entryRegex = /<entry[\s>]([\s\S]*?)<\/entry>/gi;
+    let match, count = 0;
+
     while ((match = itemRegex.exec(xml)) !== null && count < 4) {
       const block = match[1];
       const title = stripHtml(getTag(block, 'title'));
-      let link = getTag(block, 'link') || getAttr(block, 'link', 'href');
-      if (!link) link = getTag(block, 'guid');
+      let link = getTag(block, 'link') || getAttr(block, 'link', 'href') || getTag(block, 'guid');
       const image = extractImage(block);
       const rawDesc = getTag(block, 'description') || getTag(block, 'content:encoded') || '';
       const description = stripHtml(rawDesc).slice(0, 140);
-      if (title && link) {
-        items.push({ title, link, source: sourceName, image, description });
-        count++;
-      }
+      if (title && link) { items.push({ title, link, source: sourceName, image, description }); count++; }
     }
 
-    // Try Atom entries
     if (items.length === 0) {
       count = 0;
       while ((match = entryRegex.exec(xml)) !== null && count < 4) {
@@ -114,19 +98,14 @@ function parseRSS(xml, feedUrl) {
         const title = stripHtml(getTag(block, 'title'));
         const link = getAttr(block, 'link', 'href') || getTag(block, 'link');
         const image = extractImage(block);
-        if (title && link) {
-          items.push({ title, link, source: sourceName, image, description: '' });
-          count++;
-        }
+        if (title && link) { items.push({ title, link, source: sourceName, image, description: '' }); count++; }
       }
     }
-  } catch (e) {
-    console.error('RSS parse error:', e);
-  }
+  } catch (e) { console.error('RSS parse error:', e); }
   return items;
 }
 
-// IPC handler — renderer calls this to fetch RSS feeds
+// IPC handlers
 ipcMain.handle('fetch-rss', async (event, feedUrls) => {
   const results = await Promise.allSettled(
     feedUrls.map(async (url) => {
@@ -139,6 +118,26 @@ ipcMain.handle('fetch-rss', async (event, feedUrls) => {
     if (r.status === 'fulfilled') items.push(...r.value);
   }
   return items.slice(0, 12);
+});
+
+ipcMain.handle('set-auto-start', (event, enable) => {
+  app.setLoginItemSettings({
+    openAtLogin: enable,
+    openAsHidden: false,
+    name: 'HexBrief',
+  });
+  return true;
+});
+
+ipcMain.handle('get-auto-start', () => {
+  const settings = app.getLoginItemSettings();
+  return settings.openAtLogin;
+});
+
+ipcMain.handle('notify', (event, title, body) => {
+  if (Notification.isSupported()) {
+    new Notification({ title, body }).show();
+  }
 });
 
 function createWindow() {
@@ -184,7 +183,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // Permissive CSP for weather/calendar APIs
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {

@@ -7,7 +7,9 @@ import TasksWidget from './components/TasksWidget';
 import NewsWidget from './components/NewsWidget';
 import CalendarWidget from './components/CalendarWidget';
 import Onboarding from './components/Onboarding';
-import { getSettings, saveSettings, resetOnboarding } from './lib/storage';
+import { getSettings, saveSettings, resetOnboarding, resetWidgets } from './lib/storage';
+import type { Task } from './lib/storage';
+import { getTasks } from './lib/storage';
 import type { Settings } from './lib/storage';
 
 const DAYS_S = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -67,6 +69,7 @@ export default function Home() {
   const [editMode, setEditMode] = useState(false);
   const [dragOver, setDragOver] = useState<string | null>(null);
   const [now, setNow] = useState<Date | null>(null);
+  const [liveTasks, setLiveTasks] = useState<Task[]>([]);
   const dragSrc = useRef<string | null>(null);
 
   const load = useCallback(() => {
@@ -93,10 +96,10 @@ export default function Home() {
 
   function renderWidget(id: string) {
     switch (id) {
-      case 'weather':  return <WeatherWidget city={settings!.weatherCity} />;
+      case 'weather':  return <WeatherWidget city={settings!.weatherCity} lat={settings!.weatherLat} lon={settings!.weatherLon} />;
       case 'focus':    return <FocusWidget />;
       case 'calendar': return <CalendarWidget icalUrl={settings!.icalUrl} />;
-      case 'tasks':    return <TasksWidget />;
+      case 'tasks':    return <TasksWidget onTasksChange={t => setLiveTasks(t)} />;
       case 'news':     return <NewsWidget feeds={settings!.newsFeeds} />;
       default: return null;
     }
@@ -133,7 +136,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ maxWidth: 1440, margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ maxWidth: 1440, margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
       {editMode && (
         <div style={{ background: 'var(--red)', padding: '9px 36px', ...mono, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--paper)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -166,7 +169,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="rise-1"><ClockWidget userName={settings.userName} /></div>
+      <div className="rise-1"><ClockWidget userName={settings.userName} tasks={liveTasks} /></div>
 
       {/* Widget grid — columns are also drop targets */}
       <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr 280px', flex: 1, borderBottom: '1px solid var(--rule)' }} className="rise-2">
@@ -246,19 +249,22 @@ export default function Home() {
 
       {showSettings && (
         <SettingsModal settings={settings} widgets={widgets} onClose={() => setShowSettings(false)} onSave={load}
-          onWidgetChange={persistWidgets} onResetOnboarding={() => { resetOnboarding(); load(); setShowSettings(false); }}
+          onWidgetChange={persistWidgets}
+          onResetOnboarding={() => { resetOnboarding(); load(); setShowSettings(false); }}
+          onResetLayout={() => { resetWidgets(); load(); setShowSettings(false); }}
           tab={settingsTab} setTab={setSettingsTab} />
       )}
     </div>
   );
 }
 
-function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onResetOnboarding, tab, setTab }: {
+function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onResetOnboarding, onResetLayout, tab, setTab }: {
   settings: Settings;
   widgets: WidgetDef[];
   onClose: () => void; onSave: () => void;
   onWidgetChange: (w: WidgetDef[]) => void;
   onResetOnboarding: () => void;
+  onResetLayout: () => void;
   tab: string; setTab: (t: string) => void;
 }) {
   const [s, setS] = useState({ ...settings });
@@ -316,6 +322,22 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
               <div style={{ marginBottom: 16 }}>
                 <div style={label}>Your name</div>
                 <input type="text" value={s.userName} onChange={e => setS({ ...s, userName: e.target.value })} placeholder="e.g. Mike" />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <div style={label}>Launch on startup</div>
+                <div onClick={() => {
+                    const next = !s.autoStart;
+                    setS({ ...s, autoStart: next });
+                    if (typeof window !== 'undefined' && (window as any).electronAPI?.setAutoStart) {
+                      (window as any).electronAPI.setAutoStart(next);
+                    }
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: s.autoStart ? 'rgba(232,65,42,0.06)' : 'var(--ink3)', border: `1px solid ${s.autoStart ? 'var(--red)' : 'var(--rule)'}`, cursor: 'pointer', transition: 'all .15s' }}>
+                  <div style={{ width: 32, height: 18, borderRadius: 9, background: s.autoStart ? 'var(--red)' : 'var(--rule2)', position: 'relative', transition: 'background .2s', flexShrink: 0 }}>
+                    <div style={{ position: 'absolute', top: 2, left: s.autoStart ? 16 : 2, width: 14, height: 14, borderRadius: '50%', background: 'var(--paper)', transition: 'left .2s' }} />
+                  </div>
+                  <span style={{ ...mono, fontSize: 12, color: 'var(--paper)' }}>Start HexBrief when Windows starts</span>
+                </div>
               </div>
               <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--rule)' }}>
                 <div style={label}>Reset</div>
@@ -412,6 +434,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
                 })}
               </div>
               <button onClick={applyLayout} style={saveBtn}>Apply layout</button>
+              <button onClick={onResetLayout} style={{ ...saveBtn, background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', marginTop: 8, fontFamily: 'JetBrains Mono, monospace', fontSize: 11, letterSpacing: '0.12em' }}>Reset to default layout</button>
             </div>
           )}
         </div>
