@@ -6,6 +6,7 @@
 
 !include "nsDialogs.nsh"
 !include "LogicLib.nsh"
+!include "extractAppPackage.nsh"
 
 ShowInstDetails nevershow
 ShowUninstDetails nevershow
@@ -249,8 +250,10 @@ Function pg_Install_Show
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Extracting files..."
   SendMessage $hProgressBar ${PBM_SETPOS} 15 0
 
-  ; Use electron-builder's extraction macro (handles 7z, arch detection)
-  !insertmacro extractEmbeddedAppPackage
+  ; Extract the correct arch package
+  !insertmacro identify_package
+  !insertmacro compute_files_for_current_arch
+  !insertmacro decompress
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Creating shortcuts..."
   SendMessage $hProgressBar ${PBM_SETPOS} 55 0
