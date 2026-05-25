@@ -69,7 +69,7 @@ export default function NewsWidget({ feeds }: { feeds: string[] }) {
                 {item.title}
               </div>
               {item.description && (
-                <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.4, fontStyle: 'italic', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.4,  overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                   {item.description}
                 </div>
               )}

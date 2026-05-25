@@ -6,6 +6,12 @@ import FocusWidget from './components/FocusWidget';
 import TasksWidget from './components/TasksWidget';
 import NewsWidget from './components/NewsWidget';
 import CalendarWidget from './components/CalendarWidget';
+import BookmarksWidget from './components/BookmarksWidget';
+import NotesWidget from './components/NotesWidget';
+import HabitsWidget from './components/HabitsWidget';
+import CountdownWidget from './components/CountdownWidget';
+import FinanceWidget from './components/FinanceWidget';
+import InboxWidget from './components/InboxWidget';
 import Onboarding from './components/Onboarding';
 import { getSettings, saveSettings, resetOnboarding, resetWidgets } from './lib/storage';
 import type { Task } from './lib/storage';
@@ -50,11 +56,17 @@ const PRESETS = [
 ];
 
 const ALL_WIDGETS = [
-  { id: 'weather',  name: 'Conditions', desc: 'Live weather for your location' },
-  { id: 'focus',    name: 'Intention',  desc: 'Daily focus, resets each morning' },
-  { id: 'calendar', name: 'Schedule',   desc: "Today's events from iCal" },
-  { id: 'tasks',    name: 'Tasks',      desc: 'To-do list with progress bar' },
-  { id: 'news',     name: 'Headlines',  desc: 'Top stories from your RSS feeds' },
+  { id: 'weather',   name: 'Conditions',     desc: 'Live weather for your location' },
+  { id: 'focus',     name: 'Intention',       desc: 'Daily focus, resets each morning' },
+  { id: 'calendar',  name: 'Schedule',        desc: "Today's events from iCal" },
+  { id: 'tasks',     name: 'Tasks',           desc: 'To-do list with Pomodoro timer' },
+  { id: 'news',      name: 'Headlines',       desc: 'Top stories from your RSS feeds' },
+  { id: 'bookmarks', name: 'Bookmarks',       desc: 'Quick-access links with favicons' },
+  { id: 'notes',     name: 'Notes',           desc: 'Freeform persistent notepad' },
+  { id: 'habits',    name: 'Habits',          desc: 'Daily habit tracker with streaks' },
+  { id: 'countdown', name: 'Countdowns',      desc: 'Days until payday, weekend, events' },
+  { id: 'finance',   name: 'Finance',         desc: 'FX rates and crypto prices' },
+  { id: 'inbox',     name: 'Quick capture',   desc: 'Dump ideas, promote to tasks later' },
 ];
 
 function CheckSVG() {
@@ -96,11 +108,17 @@ export default function Home() {
 
   function renderWidget(id: string) {
     switch (id) {
-      case 'weather':  return <WeatherWidget city={settings!.weatherCity} lat={settings!.weatherLat} lon={settings!.weatherLon} />;
-      case 'focus':    return <FocusWidget />;
-      case 'calendar': return <CalendarWidget icalUrl={settings!.icalUrl} />;
-      case 'tasks':    return <TasksWidget onTasksChange={t => setLiveTasks(t)} />;
-      case 'news':     return <NewsWidget feeds={settings!.newsFeeds} />;
+      case 'weather':    return <WeatherWidget city={settings!.weatherCity} lat={settings!.weatherLat} lon={settings!.weatherLon} />;
+      case 'focus':      return <FocusWidget />;
+      case 'calendar':   return <CalendarWidget icalUrl={settings!.icalUrl} />;
+      case 'tasks':      return <TasksWidget onTasksChange={t => setLiveTasks(t)} />;
+      case 'news':       return <NewsWidget feeds={settings!.newsFeeds} />;
+      case 'bookmarks':  return <BookmarksWidget />;
+      case 'notes':      return <NotesWidget />;
+      case 'habits':     return <HabitsWidget />;
+      case 'countdown':  return <CountdownWidget />;
+      case 'finance':    return <FinanceWidget />;
+      case 'inbox':      return <InboxWidget />;
       default: return null;
     }
   }

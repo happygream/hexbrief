@@ -26,7 +26,10 @@
     "appId": "co.hexbrief.app",
     "productName": "HexBrief",
     "copyright": "Copyright 2026 HexBrief",
-    "asar": false,
+    "asar": true,
+    "asarUnpack": [
+      "out/**/*"
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "build-resources"

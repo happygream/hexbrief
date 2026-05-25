@@ -93,15 +93,29 @@ async function fetchViaCORSProxy(feedUrl: string): Promise<NewsItem[]> {
 export async function fetchAllFeeds(feedUrls: string[]): Promise<NewsItem[]> {
   if (!feedUrls.length) return [];
 
-  // In Electron — use IPC to fetch natively (no CORS)
+  // Validate all URLs before use — only allow http/https, no private IPs
+  const validUrls = feedUrls.filter(url => {
+    try {
+      const u = new URL(url);
+      if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+      const h = u.hostname;
+      if (h === 'localhost' || h === '127.0.0.1' || h === '::1') return false;
+      if (/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(h)) return false;
+      return true;
+    } catch { return false; }
+  });
+
+  if (!validUrls.length) return [];
+
+  // In Electron — use IPC (main process validates again server-side)
   if (typeof window !== 'undefined' && window.electronAPI?.fetchRSS) {
     try {
-      return await window.electronAPI.fetchRSS(feedUrls);
+      return await window.electronAPI.fetchRSS(validUrls);
     } catch {}
   }
 
   // Web fallback — CORS proxy
-  const results = await Promise.allSettled(feedUrls.map(fetchViaCORSProxy));
+  const results = await Promise.allSettled(validUrls.map(fetchViaCORSProxy));
   const items: NewsItem[] = [];
   for (const r of results) {
     if (r.status === 'fulfilled') items.push(...r.value);
