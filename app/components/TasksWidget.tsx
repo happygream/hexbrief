@@ -88,7 +88,7 @@ function TaskRow({ task, onToggle, onRemove }: { task: Task; onToggle: (id: stri
       <div style={{ width: 13, height: 13, border: `1px solid ${task.done ? 'var(--red)' : 'var(--rule2)'}`, background: task.done ? 'var(--red)' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}>
         {task.done && <CheckSVG />}
       </div>
-      <span style={{ fontSize: 14, color: task.done ? 'var(--muted)' : 'var(--paper)', fontWeight: 300, flex: 1, textDecoration: task.done ? 'line-through' : 'none', textDecorationColor: 'var(--dim)' }}>
+      <span style={{ fontSize: 15, color: task.done ? 'var(--muted)' : 'var(--paper)', fontWeight: 300, flex: 1, textDecoration: task.done ? 'line-through' : 'none', textDecorationColor: 'var(--dim)' }}>
         {task.text}
       </span>
       {hovered && (

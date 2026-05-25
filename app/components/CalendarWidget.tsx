@@ -26,7 +26,7 @@ export default function CalendarWidget({ icalUrl }: { icalUrl: string }) {
             {ev.allDay ? 'ALL' : fmt(ev.start)}
           </div>
           <div>
-            <div style={{ fontSize: 14, color: 'var(--paper)', fontWeight: 300, lineHeight: 1.35 }}>{ev.title}</div>
+            <div style={{ fontSize: 15, color: 'var(--paper)', fontWeight: 400, lineHeight: 1.35 }}>{ev.title}</div>
           </div>
         </div>
       ))}

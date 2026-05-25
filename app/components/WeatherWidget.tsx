@@ -39,7 +39,7 @@ export default function WeatherWidget({ city }: { city?: string }) {
             {data.temp}<sup style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 26, fontWeight: 300, color: 'var(--muted)', verticalAlign: 'super' }}>°C</sup>
           </div>
           <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--red)', letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 5 }}>{data.city}, {data.country}</div>
-          <div style={{ fontSize: 14, color: 'var(--paper2)', fontStyle: 'italic', marginTop: 2 }}>{data.description}, feels {data.feels_like}°</div>
+          <div style={{ fontSize: 16, color: 'var(--paper2)', fontStyle: 'italic', marginTop: 2 }}>{data.description}, feels {data.feels_like}°</div>
         </div>
         <svg width="64" height="64" viewBox="0 0 72 72" fill="none" style={{ opacity: 0.15 }}>
           <circle cx="36" cy="28" r="14" stroke="white" strokeWidth="2"/>
@@ -55,9 +55,9 @@ export default function WeatherWidget({ city }: { city?: string }) {
           { label: 'Feels like', val: data.feels_like, unit: '°' },
         ].map(s => (
           <div key={s.label}>
-            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, color: 'var(--muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
+            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
             <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 20, letterSpacing: '0.04em', color: 'var(--paper)', lineHeight: 1 }}>
-              {s.val}<span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, color: 'var(--muted)', marginLeft: 2 }}>{s.unit}</span>
+              {s.val}<span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--muted)', marginLeft: 2 }}>{s.unit}</span>
             </div>
           </div>
         ))}

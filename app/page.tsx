@@ -42,18 +42,18 @@ export default function Home() {
       {/* Masthead */}
       <header style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', padding: '16px 36px', borderBottom: '2px solid var(--paper)', gap: 16 }} className="rise">
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.18em', color: 'var(--muted)', textTransform: 'uppercase', border: '1px solid var(--rule2)', padding: '3px 8px' }}>Morning Brief</span>
+          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, letterSpacing: '0.14em', color: 'var(--muted)', textTransform: 'uppercase', border: '1px solid var(--rule2)', padding: '3px 8px' }}>Morning Brief</span>
           <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.1em', color: 'var(--muted)', textTransform: 'uppercase' }}>{mastDate}</span>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, letterSpacing: '0.18em', color: 'var(--paper)', lineHeight: 1 }}>
             HEX<span style={{ color: 'var(--red)' }}>B</span>RIEF
           </div>
-          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '0.2em', color: 'var(--muted)', textTransform: 'uppercase', marginTop: 2 }}>Personal daily dispatch</div>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, letterSpacing: '0.16em', color: 'var(--muted)', textTransform: 'uppercase', marginTop: 2 }}>Personal daily dispatch</div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', animation: 'pulse-red 2s infinite', flexShrink: 0 }} />
-          <button onClick={() => setShowSettings(true)} style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.14em', color: 'var(--muted)', textTransform: 'uppercase', cursor: 'pointer', border: '1px solid var(--rule2)', padding: '4px 12px', background: 'transparent', transition: 'all .2s' }}
+          <button onClick={() => setShowSettings(true)} style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: 'var(--muted)', textTransform: 'uppercase', cursor: 'pointer', border: '1px solid var(--rule2)', padding: '4px 12px', background: 'transparent', transition: 'all .2s' }}
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--paper)'; e.currentTarget.style.borderColor = 'var(--paper)'; }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--muted)'; e.currentTarget.style.borderColor = 'var(--rule2)'; }}>
             Configure
@@ -81,7 +81,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 36px', borderTop: '1px solid var(--rule)', flexWrap: 'wrap', gap: 8 }}>
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>HexBrief v1.0.0 · Open source · No tracking · No accounts</span>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>HexBrief v1.0.0 · Open source · No tracking · No accounts</span>
         <a href="https://github.com/happygream/hexbrief" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>GitHub</a>
       </footer>
 
