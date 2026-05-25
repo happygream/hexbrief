@@ -5,7 +5,6 @@
 ; ================================================================
 
 !include "nsDialogs.nsh"
-!include "LogicLib.nsh"
 
 ShowInstDetails nevershow
 ShowUninstDetails nevershow
@@ -251,11 +250,15 @@ Function pg_Install_Show
   SendMessage $hProgressBar ${PBM_SETPOS} 15 0
 
   ; Copy the correct 7z package to plugins dir, then extract
-  ${If} ${RunningX64}
+  ; Use IsWow64Process to detect 64-bit at runtime without LogicLib
+  System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
+  StrCmp $0 "1" is64 is32
+  is64:
     File /oname=$PLUGINSDIR\app.7z "${APP_64}"
-  ${Else}
+    Goto doextract
+  is32:
     File /oname=$PLUGINSDIR\app.7z "${APP_32}"
-  ${EndIf}
+  doextract:
   Nsis7z::Extract "$PLUGINSDIR\app.7z"
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Creating shortcuts..."
@@ -264,15 +267,15 @@ Function pg_Install_Show
   WriteUninstaller "$INSTDIR\Uninstall HexBrief.exe"
   StrCpy $appExe "$INSTDIR\HexBrief.exe"
 
-  ${If} $DesktopShortcut_ == ${BST_CHECKED}
+  IntCmp $DesktopShortcut_ ${BST_CHECKED} 0 skip_desktop skip_desktop
     CreateShortcut "$DESKTOP\HexBrief.lnk" "$INSTDIR\HexBrief.exe"
-  ${EndIf}
+  skip_desktop:
 
-  ${If} $StartMenuShortcut_ == ${BST_CHECKED}
+  IntCmp $StartMenuShortcut_ ${BST_CHECKED} 0 skip_startmenu skip_startmenu
     CreateDirectory "$SMPROGRAMS\HexBrief"
     CreateShortcut "$SMPROGRAMS\HexBrief\HexBrief.lnk" "$INSTDIR\HexBrief.exe"
     CreateShortcut "$SMPROGRAMS\HexBrief\Uninstall.lnk" "$INSTDIR\Uninstall HexBrief.exe"
-  ${EndIf}
+  skip_startmenu:
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Writing registry entries..."
   SendMessage $hProgressBar ${PBM_SETPOS} 80 0
@@ -327,9 +330,9 @@ Function pg_Finish_Show
   nsDialogs::Show
 
   ${NSD_GetState} $hCheckLaunch $0
-  ${If} $0 == ${BST_CHECKED}
+  IntCmp $0 ${BST_CHECKED} 0 skip_launch skip_launch
     Exec '"$INSTDIR\HexBrief.exe"'
-  ${EndIf}
+  skip_launch:
 FunctionEnd
 
 ; ================================================================
@@ -389,10 +392,10 @@ Function un_Progress_Show
 
   nsProcess::_FindProcess "HexBrief.exe"
   Pop $R0
-  ${If} $R0 == 0
+  IntCmp $R0 0 0 skip_kill skip_kill
     nsProcess::_KillProcess "HexBrief.exe"
     Sleep 800
-  ${EndIf}
+  skip_kill:
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Removing files..."
   SendMessage $hProgressBar ${PBM_SETPOS} 30 0
@@ -441,9 +444,9 @@ SectionEnd
 Function .onInit
   StrCpy $InstDir_ "$LOCALAPPDATA\Programs\HexBrief"
   StrCpy $appExe "$INSTDIR\HexBrief.exe"
-  ${If} ${RunningX64}
+  System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
+  StrCmp $0 "1" 0 +2
     SetRegView 64
-  ${EndIf}
   ; During uninstaller build phase — write uninstaller and exit
   !ifdef BUILD_UNINSTALLER
     WriteUninstaller "${UNINSTALLER_OUT_FILE}"
