@@ -90,13 +90,9 @@ UninstPage custom un_Progress_Show un_Progress_Leave
 
 ; ================================================================
 ; SHARED: Step progress dots
-; $R0 = active step (1-4)
 ; ================================================================
 !macro HB_Dots active
-  !define DOT_Y 278u
-  !define DOTS_X 255u
-
-  ${NSD_CreateLabel} 255u ${DOT_Y} 8u 5u ""
+  ${NSD_CreateLabel} 255u 278u 8u 5u ""
   Pop $0
   !if "${active}" == "1"
     SetCtlColors $0 "" "0xe8412a"
@@ -104,7 +100,7 @@ UninstPage custom un_Progress_Show un_Progress_Leave
     SetCtlColors $0 "" "0x2e3a60"
   !endif
 
-  ${NSD_CreateLabel} 267u ${DOT_Y} 6u 5u ""
+  ${NSD_CreateLabel} 267u 278u 6u 5u ""
   Pop $0
   !if "${active}" == "2"
     SetCtlColors $0 "" "0xe8412a"
@@ -112,7 +108,7 @@ UninstPage custom un_Progress_Show un_Progress_Leave
     SetCtlColors $0 "" "0x2e3a60"
   !endif
 
-  ${NSD_CreateLabel} 277u ${DOT_Y} 6u 5u ""
+  ${NSD_CreateLabel} 277u 278u 6u 5u ""
   Pop $0
   !if "${active}" == "3"
     SetCtlColors $0 "" "0xe8412a"
@@ -120,7 +116,7 @@ UninstPage custom un_Progress_Show un_Progress_Leave
     SetCtlColors $0 "" "0x2e3a60"
   !endif
 
-  ${NSD_CreateLabel} 287u ${DOT_Y} 6u 5u ""
+  ${NSD_CreateLabel} 287u 278u 6u 5u ""
   Pop $0
   !if "${active}" == "4"
     SetCtlColors $0 "" "0xe8412a"
@@ -248,15 +244,13 @@ Function pg_Install_Show
   ; ── Actual install ──────────────────────────────────────
   SetDetailsPrint none
   SetOutPath "$INSTDIR"
+  InitPluginsDir
 
-  SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Extracting app.asar..."
+  SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Extracting files..."
   SendMessage $hProgressBar ${PBM_SETPOS} 15 0
 
-  ${If} ${RunningX64}
-    File /r "${APP_64}"
-  ${Else}
-    File /r "${APP_32}"
-  ${EndIf}
+  ; Use electron-builder's extraction macro (handles 7z, arch detection)
+  !insertmacro extractEmbeddedAppPackage
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Creating shortcuts..."
   SendMessage $hProgressBar ${PBM_SETPOS} 55 0
@@ -425,12 +419,13 @@ Function un_Progress_Leave
 FunctionEnd
 
 ; ================================================================
-; SECTIONS (required by NSIS even with custom pages)
+; SECTIONS — required by NSIS
+; Install logic runs in pg_Install_Show page function above
 ; ================================================================
-Section "Install" SEC_INSTALL
+Section "-Install"
 SectionEnd
 
-Section "Uninstall"
+Section "un.Uninstall"
 SectionEnd
 
 ; ================================================================
