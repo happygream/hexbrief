@@ -11,3 +11,7 @@ Thumbs.db
 npm-debug.log*
 .vscode/
 .idea/
+-e 
+# AI assistant files
+CLAUDE.md
+AGENTS.md
