@@ -6,7 +6,6 @@
 
 !include "nsDialogs.nsh"
 !include "LogicLib.nsh"
-!include "extractAppPackage.nsh"
 
 ShowInstDetails nevershow
 ShowUninstDetails nevershow
@@ -22,6 +21,7 @@ Var hDirRequest
 Var InstDir_
 Var DesktopShortcut_
 Var StartMenuShortcut_
+Var appExe
 
 ; ── Pages ────────────────────────────────────────────────────────
 Page custom pg_Welcome_Show pg_Welcome_Leave
@@ -250,15 +250,19 @@ Function pg_Install_Show
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Extracting files..."
   SendMessage $hProgressBar ${PBM_SETPOS} 15 0
 
-  ; Extract the correct arch package
-  !insertmacro identify_package
-  !insertmacro compute_files_for_current_arch
-  !insertmacro decompress
+  ; Copy the correct 7z package to plugins dir, then extract
+  ${If} ${RunningX64}
+    File /oname=$PLUGINSDIR\app.7z "${APP_64}"
+  ${Else}
+    File /oname=$PLUGINSDIR\app.7z "${APP_32}"
+  ${EndIf}
+  Nsis7z::Extract "$PLUGINSDIR\app.7z"
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Creating shortcuts..."
   SendMessage $hProgressBar ${PBM_SETPOS} 55 0
 
   WriteUninstaller "$INSTDIR\Uninstall HexBrief.exe"
+  StrCpy $appExe "$INSTDIR\HexBrief.exe"
 
   ${If} $DesktopShortcut_ == ${BST_CHECKED}
     CreateShortcut "$DESKTOP\HexBrief.lnk" "$INSTDIR\HexBrief.exe"
@@ -436,9 +440,15 @@ SectionEnd
 ; ================================================================
 Function .onInit
   StrCpy $InstDir_ "$LOCALAPPDATA\Programs\HexBrief"
+  StrCpy $appExe "$INSTDIR\HexBrief.exe"
   ${If} ${RunningX64}
     SetRegView 64
   ${EndIf}
+  ; During uninstaller build phase — write uninstaller and exit
+  !ifdef BUILD_UNINSTALLER
+    WriteUninstaller "${UNINSTALLER_OUT_FILE}"
+    Quit
+  !endif
 FunctionEnd
 
 Function un.onInit
