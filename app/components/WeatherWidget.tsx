@@ -59,7 +59,7 @@ export default function WeatherWidget({ city, lat, lon }: { city?: string; lat?:
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
         <div>
           <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 64, lineHeight: 0.9, color: 'var(--paper)' }}>
-            {data.temp}<sup style={{ fontFamily: 'Inter, sans-serif', fontSize: 26, fontWeight: 300, color: 'var(--muted)', verticalAlign: 'super' }}>°C</sup>
+            {data.temp}<sup style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 26, fontWeight: 300, color: 'var(--muted)', verticalAlign: 'super' }}>°C</sup>
           </div>
           <div style={{ ...mono, fontSize: 9, color: 'var(--red)', letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 5 }}>{data.city}, {data.country}</div>
           <div style={{ fontSize: 14, color: 'var(--paper2)',  marginTop: 2 }}>{data.description}, feels {data.feels_like}°</div>

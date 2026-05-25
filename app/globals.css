@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -8,8 +8,8 @@
   --ink3:   #161e35;
   --rule:   #253050;
   --rule2:  #2e3a60;
-  --paper:  #f4f5fa;
-  --paper2: #dde2f0;
+  --paper:  #f0f2f8;
+  --paper2: #d8dce8;
   --muted:  #8892b0;
   --dim:    #5060a0;
   --red:    #e8412a;
@@ -19,7 +19,7 @@
 html, body {
   background: var(--ink);
   color: var(--paper);
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 300;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -30,8 +30,8 @@ html, body {
 body::after {
   content: '';
   position: fixed; inset: 0;
-  pointer-events: none; z-index: 9999; opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -68,21 +68,21 @@ body::after {
   background: linear-gradient(90deg, var(--ink2) 25%, var(--ink3) 50%, var(--ink2) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 input, select, textarea {
   background: var(--ink3);
   border: 1px solid var(--rule2);
   color: var(--paper);
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 300;
   padding: 9px 12px;
   outline: none;
   width: 100%;
   transition: border-color .2s;
-  border-radius: 4px;
+  border-radius: 6px;
   appearance: none;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--red); }

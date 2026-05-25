@@ -50,8 +50,8 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
             {[
               'Weather auto-detected from your location',
               'BBC News + Hacker News headlines loaded',
-              'Tasks, focus and calendar ready to use',
-              'Change anything in Configure at any time',
+              'Tasks, habits, countdowns and finance available',
+              'Enable extra widgets in Configure 2192 Widgets',
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 4, height: 4, background: 'var(--red)', borderRadius: '50%', flexShrink: 0 }} />

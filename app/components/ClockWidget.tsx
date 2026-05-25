@@ -67,7 +67,7 @@ export default function ClockWidget({ userName, tasks = [], events = [] }: Props
         <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 'clamp(72px,11vw,138px)', letterSpacing: '-0.01em', color: 'var(--paper)' }}>{pad(now.getMinutes())}</span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: 'clamp(8px,1.5vw,18px)', gap: 5, minWidth: 220, textAlign: 'right' }}>
-        <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 'clamp(14px,1.8vw,19px)',  color: 'var(--paper2)', fontWeight: 300 }}>
+        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(14px,1.8vw,19px)',  color: 'var(--paper2)', fontWeight: 300 }}>
           {greeting}{userName ? `, ${userName}` : ''}
         </div>
         {context && (

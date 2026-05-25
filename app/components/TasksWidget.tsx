@@ -163,7 +163,7 @@ export default function TasksWidget({ onTasksChange }: { onTasksChange?: (tasks:
             <input autoFocus value={draft} onChange={e => setDraft(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') add(); if (e.key === 'Escape') { setAdding(false); setDraft(''); } }}
               placeholder="What needs doing..."
-              style={{ background: 'none', border: 'none', fontFamily: 'Inter, sans-serif', fontSize: 15, color: 'var(--paper)', padding: 0, outline: 'none', width: '100%' }}
+              style={{ background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 15, color: 'var(--paper)', padding: 0, outline: 'none', width: '100%' }}
             />
           </div>
         )}

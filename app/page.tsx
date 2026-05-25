@@ -24,18 +24,30 @@ const MONTHS_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','N
 interface WidgetDef { id: string; name: string; col: number; order: number; visible: boolean; }
 
 const DEFAULT_WIDGETS: WidgetDef[] = [
-  { id: 'weather',  name: 'Conditions', col: 0, order: 0, visible: true },
-  { id: 'focus',    name: 'Intention',  col: 0, order: 1, visible: true },
-  { id: 'calendar', name: 'Schedule',   col: 0, order: 2, visible: true },
-  { id: 'tasks',    name: 'Tasks',      col: 1, order: 0, visible: true },
-  { id: 'news',     name: 'Headlines',  col: 2, order: 0, visible: true },
+  { id: 'weather',   name: 'Conditions',   col: 0, order: 0, visible: true },
+  { id: 'focus',     name: 'Intention',    col: 0, order: 1, visible: true },
+  { id: 'calendar',  name: 'Schedule',     col: 0, order: 2, visible: true },
+  { id: 'tasks',     name: 'Tasks',        col: 1, order: 0, visible: true },
+  { id: 'news',      name: 'Headlines',    col: 2, order: 0, visible: true },
+  // New widgets — off by default, user enables via Configure → Widgets
+  { id: 'inbox',     name: 'Quick capture',col: 1, order: 1, visible: false },
+  { id: 'habits',    name: 'Habits',       col: 0, order: 3, visible: false },
+  { id: 'countdown', name: 'Countdowns',   col: 1, order: 2, visible: false },
+  { id: 'finance',   name: 'Finance',      col: 2, order: 1, visible: false },
+  { id: 'bookmarks', name: 'Bookmarks',    col: 2, order: 2, visible: false },
+  { id: 'notes',     name: 'Notes',        col: 1, order: 3, visible: false },
 ];
 
 function getWidgets(): WidgetDef[] {
   if (typeof window === 'undefined') return DEFAULT_WIDGETS;
   try {
     const raw = localStorage.getItem('hexbrief_widgets');
-    return raw ? JSON.parse(raw) : DEFAULT_WIDGETS;
+    if (!raw) return DEFAULT_WIDGETS;
+    const saved: WidgetDef[] = JSON.parse(raw);
+    // Merge — add any new widgets that don't exist in saved state
+    const savedIds = new Set(saved.map(w => w.id));
+    const newWidgets = DEFAULT_WIDGETS.filter(w => !savedIds.has(w.id));
+    return [...saved, ...newWidgets];
   } catch { return DEFAULT_WIDGETS; }
 }
 

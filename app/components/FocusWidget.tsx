@@ -44,7 +44,7 @@ export default function FocusWidget() {
             onChange={e => setDraft(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') setEditing(false); }}
             placeholder="What matters most today?"
-            style={{ marginBottom: 10, fontFamily: 'Inter, sans-serif', fontSize: 15 }}
+            style={{ marginBottom: 10, fontFamily: 'DM Sans, sans-serif', fontSize: 15 }}
           />
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={save} style={{ ...mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '7px 14px', cursor: 'pointer' }}>Set</button>
@@ -53,7 +53,7 @@ export default function FocusWidget() {
         </div>
       ) : intention ? (
         <div>
-          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 18,  fontWeight: 300, color: 'var(--paper)', lineHeight: 1.45, marginBottom: 12 }}>
+          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 18,  fontWeight: 300, color: 'var(--paper)', lineHeight: 1.45, marginBottom: 12 }}>
             <span style={{ color: 'var(--red)', fontSize: 26, lineHeight: 0, verticalAlign: '-5px', marginRight: 2 }}>"</span>
             {intention}
             <span style={{ color: 'var(--red)', fontSize: 26, lineHeight: 0, verticalAlign: '-5px', marginLeft: 2 }}>"</span>
@@ -76,7 +76,7 @@ export default function FocusWidget() {
       ) : (
         <button
           onClick={() => { setDraft(''); setEditing(true); }}
-          style={{ background: 'rgba(232,65,42,0.04)', border: '1px dashed rgba(232,65,42,0.3)', padding: '14px 16px', width: '100%', color: 'var(--muted)', fontSize: 14, cursor: 'pointer', textAlign: 'left', fontFamily: 'Inter, sans-serif',  transition: 'border-color .2s' }}
+          style={{ background: 'rgba(232,65,42,0.04)', border: '1px dashed rgba(232,65,42,0.3)', padding: '14px 16px', width: '100%', color: 'var(--muted)', fontSize: 14, cursor: 'pointer', textAlign: 'left', fontFamily: 'DM Sans, sans-serif',  transition: 'border-color .2s' }}
           onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--red)'}
           onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(232,65,42,0.3)'}>
           + Set today's focus intention...
