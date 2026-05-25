@@ -26,9 +26,11 @@ Var appExe
 Page custom pg_Welcome_Show pg_Welcome_Leave
 Page custom pg_Options_Show pg_Options_Leave
 Page custom pg_Install_Show pg_Install_Leave
+Page instfiles "" "" pg_InstFiles_Pre  ; hidden — sections must exist for NSIS
 Page custom pg_Finish_Show
 
 UninstPage custom un.Confirm_Show un.Confirm_Leave
+UninstPage instfiles "" "" un.InstFiles_Pre
 UninstPage custom un.Progress_Show un.Progress_Leave
 
 ; ================================================================
@@ -426,6 +428,17 @@ Function un.Progress_Show
 FunctionEnd
 
 Function un.Progress_Leave
+FunctionEnd
+
+; ================================================================
+; INSTFILES PAGE SKIP — prevents blank progress window showing
+; ================================================================
+Function pg_InstFiles_Pre
+  Abort
+FunctionEnd
+
+Function un.InstFiles_Pre
+  Abort
 FunctionEnd
 
 ; ================================================================
