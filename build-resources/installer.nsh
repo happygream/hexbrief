@@ -1,6 +1,5 @@
 ; HexBrief NSIS installer
-; customHeader must be EMPTY — electron-builder pre-defines everything before it runs
-; All customisation goes in customWelcomePage and customFinishPage
+; customHeader must be empty — electron-builder pre-defines everything before it runs
 
 !macro customHeader
 !macroend
@@ -20,10 +19,43 @@
 !macroend
 
 !macro customInstall
+  ; Write registry entries
   WriteRegStr HKCU "Software\HexBrief" "InstallPath" "$INSTDIR"
   WriteRegStr HKCU "Software\HexBrief" "Version" "${VERSION}"
 !macroend
 
 !macro customUnInstall
+  ; ── Kill the process if running ──────────────────────────────────
+  DetailPrint "Closing HexBrief if running..."
+  nsProcess::_FindProcess "HexBrief.exe"
+  Pop $R0
+  ${If} $R0 == 0
+    nsProcess::_KillProcess "HexBrief.exe"
+    Sleep 1000
+  ${EndIf}
+
+  ; ── Remove app data (localStorage / user data) ───────────────────
+  DetailPrint "Removing app data..."
+  RMDir /r "$APPDATA\HexBrief"
+  RMDir /r "$LOCALAPPDATA\HexBrief"
+  RMDir /r "$LOCALAPPDATA\Programs\HexBrief"
+
+  ; ── Remove shortcuts ─────────────────────────────────────────────
+  DetailPrint "Removing shortcuts..."
+  Delete "$DESKTOP\HexBrief.lnk"
+  Delete "$QUICKLAUNCH\HexBrief.lnk"
+  Delete "$STARTMENU\Programs\HexBrief\HexBrief.lnk"
+  RMDir "$STARTMENU\Programs\HexBrief"
+  Delete "$SMSTARTUP\HexBrief.lnk"
+
+  ; ── Remove registry entries ──────────────────────────────────────
+  DetailPrint "Cleaning registry..."
   DeleteRegKey HKCU "Software\HexBrief"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Run\HexBrief"
+
+  ; ── Remove auto-start entry if set ───────────────────────────────
+  DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "HexBrief"
+
+  ; ── Confirm clean removal ─────────────────────────────────────────
+  DetailPrint "HexBrief has been completely removed."
 !macroend

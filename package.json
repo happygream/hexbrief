@@ -79,7 +79,7 @@
       "installerHeaderIcon": "build-resources/icon.ico",
       "installerSidebar": "build-resources/installerSidebar.bmp",
       "uninstallerSidebar": "build-resources/installerSidebar.bmp",
-      "deleteAppDataOnUninstall": false,
+      "deleteAppDataOnUninstall": true,
       "menuCategory": "HexBrief",
       "include": "build-resources/installer.nsh",
       "license": "build-resources/license.txt",
