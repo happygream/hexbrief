@@ -1,30 +1,17 @@
 ; ================================================================
 ; HexBrief Custom NSIS Installer — Full branded UI, no MUI2
-; All pages use nsDialogs with the dark navy sidebar on every screen
+; sharedHeader already provides: Unicode, Name, BrandingText, common.nsh,
+; x64.nsh, WinVer.nsh, StdUtils, plugin dirs, language macros
 ; ================================================================
-
-Unicode true
-RequestExecutionLevel user
-ManifestDPIAware true
-
-; electron-builder injects these via command line defines:
-; APP_64, APP_32, VERSION, PRODUCT_NAME, INSTDIR, BUILD_RESOURCES_DIR
-; and sharedHeader provides: installApplicationFiles, StdUtils, plugins
 
 !include "nsDialogs.nsh"
 !include "LogicLib.nsh"
-!include "x64.nsh"
-!include "WinVer.nsh"
-!include "common.nsh"
 
-Name "HexBrief"
-BrandingText " "
 ShowInstDetails nevershow
 ShowUninstDetails nevershow
 
 ; ── Variables ────────────────────────────────────────────────────
 Var hDialog
-Var hSidebar
 Var hProgressBar
 Var hLogLabel
 Var hCheckLaunch
