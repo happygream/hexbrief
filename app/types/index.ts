@@ -10,10 +10,13 @@ export interface WeatherData {
   temp: number;
   feels_like: number;
   description: string;
-  icon: string;
+  weatherCode: number;
   city: string;
+  country: string;
   humidity: number;
   wind: number;
+  pressure: number;
+  visibility: number;
 }
 
 export interface NewsItem {
@@ -32,11 +35,11 @@ export interface CalendarEvent {
 }
 
 export interface Settings {
-  weatherApiKey: string;
   weatherCity: string;
   icalUrl: string;
   newsFeeds: string[];
   userName: string;
   focusIntention: string;
   focusDate: string;
+  onboardingDone: boolean;
 }
