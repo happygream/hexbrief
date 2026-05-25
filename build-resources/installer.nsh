@@ -1,14 +1,13 @@
 ; HexBrief custom NSIS installer
-; Uses /redefine to override electron-builder defaults safely
+; NSIS 3.0.4.1 uses /redef not /redefine
 
 !macro customHeader
-  !define /redefine MUI_WELCOMEPAGE_TITLE "Welcome to HexBrief"
-  !define /redefine MUI_WELCOMEPAGE_TEXT "HexBrief is your personal morning dashboard.$\r$\n$\r$\nWeather, tasks, headlines and calendar \
-— all in one place. No accounts, no tracking, no subscriptions.$\r$\n$\r$\nClick Next to continue."
-  !define /redefine MUI_FINISHPAGE_TITLE "HexBrief is ready"
-  !define /redefine MUI_FINISHPAGE_TEXT "HexBrief has been installed successfully.$\r$\n$\r$\nOpen it each morning for your daily brief."
-  !define /redefine MUI_FINISHPAGE_RUN "$INSTDIR\HexBrief.exe"
-  !define /redefine MUI_FINISHPAGE_RUN_TEXT "Launch HexBrief now"
+  !define /redef MUI_WELCOMEPAGE_TITLE "Welcome to HexBrief"
+  !define /redef MUI_WELCOMEPAGE_TEXT "HexBrief is your personal morning dashboard.$\r$\n$\r$\nWeather, tasks, headlines and calendar — all in one place. No accounts, no tracking, no subscriptions.$\r$\n$\r$\nClick Next to continue."
+  !define /redef MUI_FINISHPAGE_TITLE "HexBrief is ready"
+  !define /redef MUI_FINISHPAGE_TEXT "HexBrief has been installed successfully.$\r$\n$\r$\nOpen it each morning for your daily brief."
+  !define /redef MUI_FINISHPAGE_RUN "$INSTDIR\HexBrief.exe"
+  !define /redef MUI_FINISHPAGE_RUN_TEXT "Launch HexBrief now"
 !macroend
 
 !macro customInstall
