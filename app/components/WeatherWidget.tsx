@@ -1,73 +1,66 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { WeatherData } from '@/app/types';
-import { fetchWeather, weatherIcon } from '@/app/lib/weather';
+import { fetchWeather, WeatherData } from '@/app/lib/weather';
 
-interface Props {
-  apiKey: string;
-  city: string;
-}
-
-export default function WeatherWidget({ apiKey, city }: Props) {
+export default function WeatherWidget({ city }: { city?: string }) {
   const [data, setData] = useState<WeatherData | null>(null);
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!apiKey || !city) { setLoading(false); return; }
-    fetchWeather(apiKey, city)
+    fetchWeather(city)
       .then(d => { setData(d); setError(false); })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [apiKey, city]);
-
-  if (!apiKey || !city) return (
-    <div className="card fade-up delay-2" style={{ opacity: 0.5 }}>
-      <div style={{ color: 'var(--muted)', fontSize: '13px' }}>
-        Add weather API key in settings to enable weather
-      </div>
-    </div>
-  );
+  }, [city]);
 
   if (loading) return (
-    <div className="card fade-up delay-2">
-      <div className="skeleton" style={{ height: '16px', width: '60%', marginBottom: '12px' }} />
-      <div className="skeleton" style={{ height: '40px', width: '40%', marginBottom: '8px' }} />
-      <div className="skeleton" style={{ height: '14px', width: '80%' }} />
+    <div>
+      <div className="section-label">Conditions</div>
+      <div className="skeleton" style={{ height: 60, marginBottom: 8 }} />
+      <div className="skeleton" style={{ height: 14, width: '60%', marginBottom: 6 }} />
+      <div className="skeleton" style={{ height: 14, width: '40%' }} />
     </div>
   );
 
   if (error || !data) return (
-    <div className="card fade-up delay-2">
-      <div style={{ color: 'var(--red)', fontSize: '13px' }}>Could not load weather</div>
+    <div>
+      <div className="section-label">Conditions</div>
+      <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--red)' }}>Could not load weather</div>
     </div>
   );
 
   return (
-    <div className="card fade-up delay-2">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+    <div>
+      <div className="section-label">Conditions</div>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
         <div>
-          <div style={{ color: 'var(--muted)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>
-            {data.city}
+          <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 64, lineHeight: 0.9, color: 'var(--paper)' }}>
+            {data.temp}<sup style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 26, fontWeight: 300, color: 'var(--muted)', verticalAlign: 'super' }}>°C</sup>
           </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-            <span style={{ fontSize: '48px', fontFamily: 'DM Serif Display', lineHeight: 1, color: 'var(--text)' }}>
-              {data.temp}°
-            </span>
-            <span style={{ fontSize: '24px', marginBottom: '6px' }}>{weatherIcon(data.icon)}</span>
-          </div>
-          <div style={{ color: 'var(--muted)', fontSize: '13px', marginTop: '4px', textTransform: 'capitalize' }}>
-            {data.description} · feels {data.feels_like}°
-          </div>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--red)', letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 5 }}>{data.city}, {data.country}</div>
+          <div style={{ fontSize: 14, color: 'var(--paper2)', fontStyle: 'italic', marginTop: 2 }}>{data.description}, feels {data.feels_like}°</div>
         </div>
-        <div style={{ textAlign: 'right', marginTop: '4px' }}>
-          <div style={{ color: 'var(--muted)', fontSize: '12px', marginBottom: '6px' }}>
-            <span style={{ color: 'var(--text)' }}>{data.humidity}%</span> humidity
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none" style={{ opacity: 0.15 }}>
+          <circle cx="36" cy="28" r="14" stroke="white" strokeWidth="2"/>
+          <path d="M8 44 Q20 36 36 44 Q52 52 64 44" stroke="white" strokeWidth="1.5" fill="none"/>
+          <path d="M10 52 Q24 42 42 52 Q58 60 66 52" stroke="white" strokeWidth="1.2" fill="none" opacity=".5"/>
+        </svg>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, paddingTop: 14, borderTop: '1px solid var(--rule)' }}>
+        {[
+          { label: 'Humidity', val: data.humidity, unit: '%' },
+          { label: 'Wind', val: data.wind, unit: 'm/s' },
+          { label: 'Pressure', val: data.pressure, unit: 'hPa' },
+          { label: 'Feels like', val: data.feels_like, unit: '°' },
+        ].map(s => (
+          <div key={s.label}>
+            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, color: 'var(--muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
+            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 20, letterSpacing: '0.04em', color: 'var(--paper)', lineHeight: 1 }}>
+              {s.val}<span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, color: 'var(--muted)', marginLeft: 2 }}>{s.unit}</span>
+            </div>
           </div>
-          <div style={{ color: 'var(--muted)', fontSize: '12px' }}>
-            <span style={{ color: 'var(--text)' }}>{data.wind} m/s</span> wind
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

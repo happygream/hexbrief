@@ -1,22 +1,31 @@
-import { Settings, Task } from '@/app/types';
+export interface Task {
+  id: string;
+  text: string;
+  done: boolean;
+  createdAt: string;
+}
 
-const KEYS = {
-  SETTINGS: 'hexbrief_settings',
-  TASKS: 'hexbrief_tasks',
-};
+export interface Settings {
+  weatherCity: string;
+  icalUrl: string;
+  newsFeeds: string[];
+  userName: string;
+  focusIntention: string;
+  focusDate: string;
+  onboardingDone: boolean;
+}
 
 export const defaultSettings: Settings = {
-  weatherApiKey: '',
   weatherCity: '',
   icalUrl: '',
-  newsFeeds: [
-    'https://feeds.bbci.co.uk/news/rss.xml',
-    'https://hnrss.org/frontpage',
-  ],
+  newsFeeds: [],
   userName: '',
   focusIntention: '',
   focusDate: '',
+  onboardingDone: false,
 };
+
+const KEYS = { SETTINGS: 'hexbrief_settings', TASKS: 'hexbrief_tasks' };
 
 export function getSettings(): Settings {
   if (typeof window === 'undefined') return defaultSettings;
@@ -24,36 +33,23 @@ export function getSettings(): Settings {
     const raw = localStorage.getItem(KEYS.SETTINGS);
     if (!raw) return defaultSettings;
     return { ...defaultSettings, ...JSON.parse(raw) };
-  } catch {
-    return defaultSettings;
-  }
+  } catch { return defaultSettings; }
 }
 
-export function saveSettings(settings: Settings): void {
+export function saveSettings(s: Settings): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+  localStorage.setItem(KEYS.SETTINGS, JSON.stringify(s));
 }
 
 export function getTasks(): Task[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(KEYS.TASKS);
-    if (!raw) return [];
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
 }
 
 export function saveTasks(tasks: Task[]): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(KEYS.TASKS, JSON.stringify(tasks));
-}
-
-export function getTodaysTasks(tasks: Task[]): Task[] {
-  const today = new Date().toDateString();
-  return tasks.filter(t => {
-    if (t.dueDate) return new Date(t.dueDate).toDateString() === today;
-    return !t.done;
-  });
 }

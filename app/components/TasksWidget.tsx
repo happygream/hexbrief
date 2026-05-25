@@ -1,168 +1,100 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Task } from '@/app/types';
-import { getTasks, saveTasks } from '@/app/lib/storage';
+import { Task, getTasks, saveTasks } from '@/app/lib/storage';
+
+function CheckSVG() {
+  return <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="#f2f3f8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}
 
 export default function TasksWidget() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTask, setNewTask] = useState('');
   const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState('');
 
-  useEffect(() => {
-    setTasks(getTasks());
-  }, []);
+  useEffect(() => { setTasks(getTasks()); }, []);
 
-  function persist(updated: Task[]) {
-    setTasks(updated);
-    saveTasks(updated);
-  }
+  function persist(t: Task[]) { setTasks(t); saveTasks(t); }
 
-  function addTask() {
-    if (!newTask.trim()) return;
-    const task: Task = {
-      id: Date.now().toString(),
-      text: newTask.trim(),
-      done: false,
-      createdAt: new Date().toISOString(),
-    };
-    persist([...tasks, task]);
-    setNewTask('');
-    setAdding(false);
-  }
-
-  function toggleTask(id: string) {
+  function toggle(id: string) {
     persist(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
   }
 
-  function deleteTask(id: string) {
-    persist(tasks.filter(t => t.id !== id));
+  function add() {
+    if (!draft.trim()) return;
+    persist([...tasks, { id: Date.now().toString(), text: draft.trim(), done: false, createdAt: new Date().toISOString() }]);
+    setDraft(''); setAdding(false);
   }
 
-  const active = tasks.filter(t => !t.done);
-  const done = tasks.filter(t => t.done);
+  function remove(id: string) { persist(tasks.filter(t => t.id !== id)); }
+
+  const remaining = tasks.filter(t => !t.done).length;
+  const pct = tasks.length ? Math.round((tasks.filter(t => t.done).length / tasks.length) * 100) : 0;
 
   return (
-    <div className="card fade-up delay-4">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ color: 'var(--muted)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            Tasks
-          </span>
-          {active.length > 0 && (
-            <span style={{
-              background: 'var(--accent-dim)',
-              color: 'var(--accent)',
-              fontSize: '11px',
-              padding: '2px 7px',
-              borderRadius: '10px',
-              border: '1px solid rgba(200,169,110,0.2)',
-            }}>
-              {active.length}
-            </span>
-          )}
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div>
+          <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, color: 'var(--red)', lineHeight: 1 }}>{remaining}</span>
+          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, color: 'var(--muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginLeft: 5, verticalAlign: 4 }}>remaining</span>
         </div>
-        <button className="btn-ghost" onClick={() => setAdding(true)}>+ Add</button>
+        <button onClick={() => setAdding(true)} style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.1em', color: 'var(--muted)', background: 'none', border: '1px solid var(--rule2)', padding: '4px 10px', cursor: 'pointer', textTransform: 'uppercase' }}>+ Add</button>
+      </div>
+      <div className="section-label">Tasks</div>
+
+      <div>
+        {adding && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--rule)' }}>
+            <input
+              autoFocus value={draft} onChange={e => setDraft(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') add(); if (e.key === 'Escape') { setAdding(false); setDraft(''); } }}
+              placeholder="What needs doing..."
+              style={{ background: 'none', border: 'none', fontFamily: 'Cormorant Garamond, serif', fontSize: 15, color: 'var(--paper)', padding: 0, outline: 'none' }}
+            />
+          </div>
+        )}
+        {tasks.map(task => (
+          <TaskRow key={task.id} task={task} onToggle={toggle} onRemove={remove} />
+        ))}
+        {tasks.length === 0 && !adding && (
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '16px 0' }}>
+            No tasks — clear day ahead
+          </div>
+        )}
       </div>
 
-      {adding && (
-        <div style={{ marginBottom: '12px' }}>
-          <input
-            type="text"
-            autoFocus
-            value={newTask}
-            onChange={e => setNewTask(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') addTask(); if (e.key === 'Escape') setAdding(false); }}
-            placeholder="What needs doing?"
-            style={{ marginBottom: '8px' }}
-          />
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn" onClick={addTask}>Add task</button>
-            <button className="btn-ghost" onClick={() => setAdding(false)}>Cancel</button>
+      <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid var(--rule)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'JetBrains Mono, monospace', fontSize: 8.5, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 7 }}>
+          <span>Daily progress</span>
+          <span>{tasks.filter(t => t.done).length} / {tasks.length} complete</span>
+        </div>
+        <div style={{ height: 1, background: 'var(--rule2)', position: 'relative' }}>
+          <div style={{ height: 1, background: 'var(--red)', width: `${pct}%`, transition: 'width .3s', position: 'relative' }}>
+            <div style={{ position: 'absolute', right: 0, top: -3, width: 7, height: 7, background: 'var(--red)', borderRadius: '50%' }} />
           </div>
         </div>
-      )}
-
-      {tasks.length === 0 && !adding && (
-        <div style={{ color: 'var(--muted)', fontSize: '13px', padding: '8px 0' }}>
-          No tasks yet — clear day ahead.
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-        {active.map(task => (
-          <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />
-        ))}
-        {done.length > 0 && active.length > 0 && (
-          <div style={{ height: '1px', background: 'var(--border)', margin: '8px 0' }} />
-        )}
-        {done.map(task => (
-          <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />
-        ))}
       </div>
     </div>
   );
 }
 
-function TaskRow({ task, onToggle, onDelete }: {
-  task: Task;
-  onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
-}) {
+function TaskRow({ task, onToggle, onRemove }: { task: Task; onToggle: (id: string) => void; onRemove: (id: string) => void }) {
   const [hovered, setHovered] = useState(false);
-
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        padding: '8px 0',
-        borderRadius: '6px',
-        transition: 'all 0.15s',
-      }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--rule)', cursor: 'pointer' }}
+      onClick={() => onToggle(task.id)}
     >
-      <span
-        onClick={() => onToggle(task.id)}
-        style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '4px',
-          border: task.done ? '2px solid var(--green)' : '2px solid var(--border)',
-          background: task.done ? 'var(--green)' : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          flexShrink: 0,
-          transition: 'all 0.15s',
-        }}
-      >
-        {task.done && (
-          <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-            <path d="M1 3.5L3.5 6L8 1" stroke="var(--bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )}
-      </span>
-      <span style={{
-        flex: 1,
-        fontSize: '14px',
-        color: task.done ? 'var(--muted)' : 'var(--text)',
-        textDecoration: task.done ? 'line-through' : 'none',
-        fontWeight: 300,
-      }}>
+      <div style={{ width: 13, height: 13, border: `1px solid ${task.done ? 'var(--red)' : 'var(--rule2)'}`, background: task.done ? 'var(--red)' : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}>
+        {task.done && <CheckSVG />}
+      </div>
+      <span style={{ fontSize: 14, color: task.done ? 'var(--muted)' : 'var(--paper)', fontWeight: 300, flex: 1, textDecoration: task.done ? 'line-through' : 'none', textDecorationColor: 'var(--dim)' }}>
         {task.text}
       </span>
       {hovered && (
-        <span
-          onClick={() => onDelete(task.id)}
-          style={{ color: 'var(--muted)', cursor: 'pointer', fontSize: '16px', lineHeight: 1, transition: 'color 0.15s' }}
+        <span onClick={e => { e.stopPropagation(); onRemove(task.id); }} style={{ color: 'var(--muted)', cursor: 'pointer', fontSize: 16, lineHeight: 1, transition: 'color .15s' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--red)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}
-        >
-          ×
-        </span>
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}>×</span>
       )}
     </div>
   );

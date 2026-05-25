@@ -1,84 +1,34 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CalendarEvent } from '@/app/types';
-import { fetchCalendarEvents } from '@/app/lib/calendar';
+import { CalendarEvent, fetchCalendarEvents } from '@/app/lib/calendar';
 
-interface Props {
-  icalUrl: string;
-}
+function fmt(d: Date) { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
 
-function formatTime(d: Date): string {
-  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-}
-
-export default function CalendarWidget({ icalUrl }: Props) {
+export default function CalendarWidget({ icalUrl }: { icalUrl: string }) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!icalUrl) { setLoading(false); return; }
-    fetchCalendarEvents(icalUrl)
-      .then(data => { setEvents(data); setError(false); })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+    fetchCalendarEvents(icalUrl).then(setEvents).finally(() => setLoading(false));
   }, [icalUrl]);
 
-  if (!icalUrl) return (
-    <div className="card fade-up delay-3" style={{ opacity: 0.5 }}>
-      <div style={{ color: 'var(--muted)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>
-        Calendar
-      </div>
-      <div style={{ color: 'var(--muted)', fontSize: '13px' }}>Add an iCal URL in settings</div>
-    </div>
-  );
-
   return (
-    <div className="card fade-up delay-3">
-      <div style={{ color: 'var(--muted)', fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '16px' }}>
-        Today's schedule
-      </div>
-
-      {loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '36px' }} />
-          ))}
-        </div>
-      )}
-
-      {error && <div style={{ color: 'var(--red)', fontSize: '13px' }}>Could not load calendar</div>}
-
-      {!loading && !error && events.length === 0 && (
-        <div style={{ color: 'var(--muted)', fontSize: '13px' }}>Nothing scheduled today.</div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        {events.map(event => (
-          <div key={event.id} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '8px 12px',
-            background: 'var(--surface2)',
-            borderRadius: '8px',
-            borderLeft: '2px solid var(--accent)',
-          }}>
-            <div style={{ flexShrink: 0 }}>
-              {event.allDay ? (
-                <span style={{ fontSize: '11px', color: 'var(--muted)', letterSpacing: '0.04em' }}>ALL DAY</span>
-              ) : (
-                <span style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: 500 }}>
-                  {formatTime(event.start)}
-                </span>
-              )}
-            </div>
-            <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 400 }}>
-              {event.title}
-            </div>
+    <div>
+      <div className="section-label">Schedule</div>
+      {!icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Add iCal URL in settings</div>}
+      {loading && icalUrl && [...Array(3)].map((_, i) => <div key={i} className="skeleton" style={{ height: 36, marginBottom: 6 }} />)}
+      {!loading && events.length === 0 && icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Nothing scheduled today</div>}
+      {events.map(ev => (
+        <div key={ev.id} style={{ display: 'flex', gap: 12, padding: '9px 0', borderBottom: '1px solid var(--rule)', alignItems: 'flex-start' }}>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--red)', letterSpacing: '0.06em', flexShrink: 0, paddingTop: 2, minWidth: 38 }}>
+            {ev.allDay ? 'ALL' : fmt(ev.start)}
           </div>
-        ))}
-      </div>
+          <div>
+            <div style={{ fontSize: 14, color: 'var(--paper)', fontWeight: 300, lineHeight: 1.35 }}>{ev.title}</div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
