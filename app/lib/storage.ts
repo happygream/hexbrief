@@ -13,7 +13,10 @@ export interface Settings {
   focusIntention: string;
   focusDate: string;
   onboardingDone: boolean;
+  installedVersion: string;
 }
+
+export const APP_VERSION = '1.0.0';
 
 export const defaultSettings: Settings = {
   weatherCity: '',
@@ -23,6 +26,7 @@ export const defaultSettings: Settings = {
   focusIntention: '',
   focusDate: '',
   onboardingDone: false,
+  installedVersion: APP_VERSION,
 };
 
 const KEYS = { SETTINGS: 'hexbrief_settings', TASKS: 'hexbrief_tasks' };
@@ -32,13 +36,20 @@ export function getSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEYS.SETTINGS);
     if (!raw) return defaultSettings;
-    return { ...defaultSettings, ...JSON.parse(raw) };
+    const parsed = { ...defaultSettings, ...JSON.parse(raw) };
+    return parsed;
   } catch { return defaultSettings; }
 }
 
 export function saveSettings(s: Settings): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(KEYS.SETTINGS, JSON.stringify(s));
+}
+
+export function resetOnboarding(): void {
+  if (typeof window === 'undefined') return;
+  const s = getSettings();
+  saveSettings({ ...s, onboardingDone: false, newsFeeds: [] });
 }
 
 export function getTasks(): Task[] {
