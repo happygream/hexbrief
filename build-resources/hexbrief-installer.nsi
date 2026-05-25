@@ -28,8 +28,8 @@ Page custom pg_Options_Show pg_Options_Leave
 Page custom pg_Install_Show pg_Install_Leave
 Page custom pg_Finish_Show
 
-UninstPage custom un_Confirm_Show un_Confirm_Leave
-UninstPage custom un_Progress_Show un_Progress_Leave
+UninstPage custom un.Confirm_Show un.Confirm_Leave
+UninstPage custom un.Progress_Show un.Progress_Leave
 
 ; ================================================================
 ; SHARED: Draw sidebar (called on every page)
@@ -338,7 +338,7 @@ FunctionEnd
 ; ================================================================
 ; UNINSTALLER: CONFIRM
 ; ================================================================
-Function un_Confirm_Show
+Function un.Confirm_Show
   nsDialogs::Create 1018
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
@@ -359,13 +359,13 @@ Function un_Confirm_Show
   nsDialogs::Show
 FunctionEnd
 
-Function un_Confirm_Leave
+Function un.Confirm_Leave
 FunctionEnd
 
 ; ================================================================
 ; UNINSTALLER: PROGRESS
 ; ================================================================
-Function un_Progress_Show
+Function un.Progress_Show
   nsDialogs::Create 1018
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
@@ -425,7 +425,7 @@ Function un_Progress_Show
   SendMessage $hProgressBar ${PBM_SETPOS} 100 0
 FunctionEnd
 
-Function un_Progress_Leave
+Function un.Progress_Leave
 FunctionEnd
 
 ; ================================================================
