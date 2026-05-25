@@ -177,14 +177,14 @@ export default function Home() {
 
       <header style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', padding: '16px 36px', borderBottom: '2px solid var(--paper)', gap: 16 }} className="rise">
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ ...mono, fontSize: 11, letterSpacing: '0.14em', color: 'var(--muted)', textTransform: 'uppercase', border: '1px solid var(--rule2)', padding: '3px 8px' }}>Morning Brief</span>
-          <span style={{ ...mono, fontSize: 11, letterSpacing: '0.08em', color: 'var(--muted)', textTransform: 'uppercase' }}>{mastDate}</span>
+          <span style={{ ...mono, fontSize: 12, letterSpacing: '0.12em', color: 'var(--muted)', textTransform: 'uppercase', border: '1px solid var(--rule2)', padding: '3px 8px' }}>Morning Brief</span>
+          <span style={{ ...mono, fontSize: 12, letterSpacing: '0.08em', color: 'var(--muted)', textTransform: 'uppercase' }}>{mastDate}</span>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, letterSpacing: '0.18em', color: 'var(--paper)', lineHeight: 1 }}>
             HEX<span style={{ color: 'var(--red)' }}>B</span>RIEF
           </div>
-          <div style={{ ...mono, fontSize: 10, letterSpacing: '0.16em', color: 'var(--muted)', textTransform: 'uppercase', marginTop: 2 }}>Personal daily dispatch</div>
+          <div style={{ ...mono, fontSize: 12, letterSpacing: '0.12em', color: 'var(--muted)', textTransform: 'uppercase', marginTop: 2 }}>Personal daily dispatch</div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', animation: 'pulse-red 2s infinite', flexShrink: 0 }} />
@@ -301,7 +301,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
   const [feedInput, setFeedInput] = useState('');
   const [localWidgets, setLocalWidgets] = useState([...widgets]);
   const mono: React.CSSProperties = { fontFamily: 'JetBrains Mono, monospace' };
-  const label: React.CSSProperties = { ...mono, fontSize: 9, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 };
+  const label: React.CSSProperties = { ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 };
   const hint: React.CSSProperties = { ...mono, fontSize: 9, color: 'var(--dim)', letterSpacing: '0.06em', marginTop: 4 };
   const saveBtn: React.CSSProperties = { width: '100%', background: 'var(--red)', border: 'none', color: 'var(--paper)', fontFamily: 'Bebas Neue, sans-serif', fontSize: 15, letterSpacing: '0.18em', padding: 13, cursor: 'pointer', marginTop: 8 };
 
@@ -341,7 +341,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
 
         <div style={{ display: 'flex', borderBottom: '1px solid var(--rule)', padding: '0 28px', overflowX: 'auto' }}>
           {TABS.map(t => (
-            <button key={t} onClick={() => setTab(t)} style={{ ...mono, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: tab === t ? 'var(--paper)' : 'var(--muted)', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? 'var(--red)' : 'transparent'}`, padding: '12px 0', marginRight: 22, cursor: 'pointer', whiteSpace: 'nowrap' }}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} style={{ ...mono, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: tab === t ? 'var(--paper)' : 'var(--muted)', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t ? 'var(--red)' : 'transparent'}`, padding: '12px 0', marginRight: 22, cursor: 'pointer', whiteSpace: 'nowrap' }}>{t}</button>
           ))}
         </div>
 
@@ -396,7 +396,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
 
           {tab === 'news' && (
             <div>
-              <div style={{ ...mono, fontSize: 9, color: 'var(--muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 10 }}>Preset sources</div>
+              <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 10 }}>Preset sources</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 20 }}>
                 {PRESETS.map(p => {
                   const on = s.newsFeeds.includes(p.url);
@@ -406,7 +406,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
                         {on && <CheckSVG />}
                       </div>
                       <span style={{ ...mono, fontSize: 12, color: 'var(--paper)', flex: 1 }}>{p.name}</span>
-                      <span style={{ ...mono, fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{p.cat}</span>
+                      <span style={{ ...mono, fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{p.cat}</span>
                     </div>
                   );
                 })}
@@ -439,7 +439,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
 
           {tab === 'widgets' && (
             <div>
-              <div style={{ ...mono, fontSize: 9, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 14 }}>Toggle widgets and assign columns</div>
+              <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 14 }}>Toggle widgets and assign columns</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
                 {ALL_WIDGETS.map(aw => {
                   const w = localWidgets.find(x => x.id === aw.id);
@@ -451,7 +451,7 @@ function SettingsModal({ settings, widgets, onClose, onSave, onWidgetChange, onR
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ ...mono, fontSize: 12, color: 'var(--paper)' }}>{aw.name}</div>
-                        <div style={{ ...mono, fontSize: 9, color: 'var(--muted)', marginTop: 2 }}>{aw.desc}</div>
+                        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{aw.desc}</div>
                       </div>
                       <select value={w?.col ?? 0} onChange={e => changeCol(aw.id, parseInt(e.target.value))}
                         style={{ ...mono, fontSize: 10, background: 'var(--ink)', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '3px 8px', cursor: 'pointer', width: 'auto' }}>

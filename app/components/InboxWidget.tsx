@@ -66,13 +66,13 @@ export default function InboxWidget() {
           autoFocus
         />
         <button onClick={add}
-          style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '0 14px', cursor: 'pointer', borderRadius: 3, flexShrink: 0 }}>
+          style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '0 14px', cursor: 'pointer', borderRadius: 3, flexShrink: 0 }}>
           Add
         </button>
       </div>
 
       {items.length === 0 && (
-        <div style={{ ...mono, fontSize: 10, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           Inbox clear — type above to capture something
         </div>
       )}
@@ -104,7 +104,7 @@ export default function InboxWidget() {
               saveTasks([...tasks, ...newTasks]);
               persist([]);
             }
-          }} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>
+          }} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>
             Move all to tasks
           </button>
         </div>
@@ -126,7 +126,7 @@ function InboxRow({ item, flashing, onMoveToTasks, onDiscard }: {
       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--rule)', transition: 'opacity .3s', opacity: flashing ? 0.3 : 1 }}>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 13, color: 'var(--paper)', fontWeight: 400, lineHeight: 1.4 }}>{item.text}</div>
-        <div style={{ ...mono, fontSize: 8, color: 'var(--dim)', letterSpacing: '0.06em', marginTop: 2 }}>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', marginTop: 2 }}>
           {new Date(item.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
@@ -134,7 +134,7 @@ function InboxRow({ item, flashing, onMoveToTasks, onDiscard }: {
         <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
           <button onClick={() => onMoveToTasks(item)}
             title="Move to tasks"
-            style={{ ...mono, fontSize: 8, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(232,65,42,0.1)', border: '1px solid rgba(232,65,42,0.3)', color: 'var(--red)', padding: '3px 8px', cursor: 'pointer', borderRadius: 3 }}>
+            style={{ ...mono, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', background: 'rgba(232,65,42,0.1)', border: '1px solid rgba(232,65,42,0.3)', color: 'var(--red)', padding: '3px 8px', cursor: 'pointer', borderRadius: 3 }}>
             Task
           </button>
           <button onClick={() => onDiscard(item.id)}

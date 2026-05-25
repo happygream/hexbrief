@@ -47,8 +47,8 @@ export default function FocusWidget() {
             style={{ marginBottom: 10, fontFamily: 'DM Sans, sans-serif', fontSize: 15 }}
           />
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={save} style={{ ...mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '7px 14px', cursor: 'pointer' }}>Set</button>
-            <button onClick={() => setEditing(false)} style={{ ...mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '7px 14px', cursor: 'pointer' }}>Cancel</button>
+            <button onClick={save} style={{ ...mono, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '7px 14px', cursor: 'pointer' }}>Set</button>
+            <button onClick={() => setEditing(false)} style={{ ...mono, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '7px 14px', cursor: 'pointer' }}>Cancel</button>
           </div>
         </div>
       ) : intention ? (
@@ -60,13 +60,13 @@ export default function FocusWidget() {
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <button onClick={() => { setDraft(intention); setEditing(true); }}
-              style={{ ...mono, fontSize: 8, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0 }}
+              style={{ ...mono, fontSize: 10, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0 }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--paper)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
               — edit
             </button>
             <button onClick={clear}
-              style={{ ...mono, fontSize: 8, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0 }}
+              style={{ ...mono, fontSize: 10, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0 }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--red)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
               — clear

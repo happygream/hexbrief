@@ -42,7 +42,7 @@ export default function NotesWidget() {
             style={{ resize: 'vertical', minHeight: 120, fontFamily: 'DM Sans, sans-serif', fontSize: 13, lineHeight: 1.6 }}
           />
           <button onClick={() => setEditing(false)}
-            style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '6px 14px', cursor: 'pointer', marginTop: 8, borderRadius: 3 }}>
+            style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '6px 14px', cursor: 'pointer', marginTop: 8, borderRadius: 3 }}>
             Done
           </button>
         </div>
@@ -52,7 +52,7 @@ export default function NotesWidget() {
             {notes.length > 300 ? notes.slice(0, 300) + '...' : notes}
           </div>
           <button onClick={e => { e.stopPropagation(); setEditing(true); }}
-            style={{ ...mono, fontSize: 8, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', background: 'none', border: 'none', padding: 0, marginTop: 8 }}
+            style={{ ...mono, fontSize: 10, color: 'var(--muted)', letterSpacing: '0.14em', textTransform: 'uppercase', cursor: 'pointer', background: 'none', border: 'none', padding: 0, marginTop: 8 }}
             onMouseEnter={e => e.currentTarget.style.color = 'var(--paper)'}
             onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
             — edit

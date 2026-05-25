@@ -6,12 +6,12 @@
   --ink:    #0a0f1e;
   --ink2:   #0f1629;
   --ink3:   #161e35;
-  --rule:   #253050;
-  --rule2:  #2e3a60;
+  --rule:   #2a3560;
+  --rule2:  #354070;
   --paper:  #f0f2f8;
-  --paper2: #d8dce8;
-  --muted:  #8892b0;
-  --dim:    #5060a0;
+  --paper2: #c8cedf;
+  --muted:  #9aa5c8;
+  --dim:    #6070a8;
   --red:    #e8412a;
   --red-dim: rgba(232,65,42,0.1);
 }
@@ -20,18 +20,11 @@ html, body {
   background: var(--ink);
   color: var(--paper);
   font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 9999; opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -52,8 +45,8 @@ body::after {
 
 .section-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 16px;
@@ -76,8 +69,8 @@ input, select, textarea {
   border: 1px solid var(--rule2);
   color: var(--paper);
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 300;
+  font-size: 14px;
+  font-weight: 400;
   padding: 9px 12px;
   outline: none;
   width: 100%;

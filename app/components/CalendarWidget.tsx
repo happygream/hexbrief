@@ -17,9 +17,9 @@ export default function CalendarWidget({ icalUrl }: { icalUrl: string }) {
   return (
     <div>
       <div className="section-label">Schedule</div>
-      {!icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Add iCal URL in settings</div>}
+      {!icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Add iCal URL in settings</div>}
       {loading && icalUrl && [...Array(3)].map((_, i) => <div key={i} className="skeleton" style={{ height: 36, marginBottom: 6 }} />)}
-      {!loading && events.length === 0 && icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Nothing scheduled today</div>}
+      {!loading && events.length === 0 && icalUrl && <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Nothing scheduled today</div>}
       {events.map(ev => (
         <div key={ev.id} style={{ display: 'flex', gap: 12, padding: '9px 0', borderBottom: '1px solid var(--rule)', alignItems: 'flex-start' }}>
           <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--red)', letterSpacing: '0.06em', flexShrink: 0, paddingTop: 2, minWidth: 38 }}>

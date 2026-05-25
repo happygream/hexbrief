@@ -101,20 +101,20 @@ export default function HabitsWidget() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
             {SUGGESTIONS.map(s => (
               <button key={s.name} onClick={() => addHabit(s.name)}
-                style={{ ...mono, fontSize: 9, letterSpacing: '0.06em', background: 'var(--ink2)', border: '1px solid var(--rule)', color: 'var(--muted)', padding: '3px 8px', cursor: 'pointer', borderRadius: 3 }}>
+                style={{ ...mono, fontSize: 11, letterSpacing: '0.06em', background: 'var(--ink2)', border: '1px solid var(--rule)', color: 'var(--muted)', padding: '3px 8px', cursor: 'pointer', borderRadius: 3 }}>
                 {s.name}
               </button>
             ))}
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={() => addHabit(newName)} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
-            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
+            <button onClick={() => addHabit(newName)} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
+            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
           </div>
         </div>
       )}
 
       {habits.length === 0 && !adding && (
-        <div style={{ ...mono, fontSize: 10, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No habits yet — add one to start tracking</div>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No habits yet — add one to start tracking</div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

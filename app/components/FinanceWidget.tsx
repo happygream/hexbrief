@@ -136,10 +136,10 @@ export default function FinanceWidget() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div className="section-label" style={{ margin: 0, flex: 1 }}>Finance</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {lastUpdate && <span style={{ ...mono, fontSize: 8, color: 'var(--dim)', letterSpacing: '0.06em' }}>
+          {lastUpdate && <span style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em' }}>
             {lastUpdate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
           </span>}
-          <button onClick={() => loadRates(tickers)} style={{ ...mono, fontSize: 9, color: 'var(--muted)', background: 'none', border: '1px solid var(--rule)', padding: '2px 7px', cursor: 'pointer', borderRadius: 3 }}>
+          <button onClick={() => loadRates(tickers)} style={{ ...mono, fontSize: 11, color: 'var(--muted)', background: 'none', border: '1px solid var(--rule)', padding: '2px 7px', cursor: 'pointer', borderRadius: 3 }}>
             {loading ? '...' : 'Refresh'}
           </button>
           <button onClick={() => setAdding(true)} style={{ ...mono, fontSize: 10, letterSpacing: '0.1em', color: 'var(--muted)', background: 'none', border: '1px solid var(--rule2)', padding: '3px 8px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 3 }}>+ Add</button>
@@ -157,17 +157,17 @@ export default function FinanceWidget() {
             onKeyDown={e => { if (e.key === 'Enter') add(); if (e.key === 'Escape') setAdding(false); }}
             autoFocus style={{ marginBottom: 8 }} />
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={add} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
-            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
+            <button onClick={add} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
+            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
           </div>
-          <div style={{ ...mono, fontSize: 8, color: 'var(--dim)', marginTop: 6, letterSpacing: '0.06em' }}>
+          <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', marginTop: 6, letterSpacing: '0.06em' }}>
             FX: frankfurter.app · Crypto: CoinGecko · No API keys needed
           </div>
         </div>
       )}
 
       {tickers.length === 0 && !adding && (
-        <div style={{ ...mono, fontSize: 10, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No tickers — add FX pairs or crypto</div>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No tickers — add FX pairs or crypto</div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -193,7 +193,7 @@ function TickerRow({ ticker, rate, loading, onRemove }: {
       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--rule)' }}>
       <div style={{ flex: 1 }}>
         <div style={{ ...mono, fontSize: 12, color: 'var(--paper)', letterSpacing: '0.04em', fontWeight: 400 }}>{ticker.symbol}</div>
-        <div style={{ ...mono, fontSize: 8, color: 'var(--muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 1 }}>{ticker.type}</div>
+        <div style={{ ...mono, fontSize: 10, color: 'var(--muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 1 }}>{ticker.type}</div>
       </div>
       {loading ? (
         <div className="skeleton" style={{ width: 60, height: 14 }} />
@@ -203,13 +203,13 @@ function TickerRow({ ticker, rate, loading, onRemove }: {
             {ticker.type === 'crypto' ? '£' : ''}{fmt(rate.price, ticker.symbol)}
           </div>
           {change !== undefined && (
-            <div style={{ ...mono, fontSize: 9, color: changeColor, letterSpacing: '0.04em' }}>
+            <div style={{ ...mono, fontSize: 11, color: changeColor, letterSpacing: '0.04em' }}>
               {change > 0 ? '+' : ''}{change.toFixed(2)}%
             </div>
           )}
         </div>
       ) : (
-        <span style={{ ...mono, fontSize: 9, color: 'var(--dim)' }}>—</span>
+        <span style={{ ...mono, fontSize: 11, color: 'var(--dim)' }}>—</span>
       )}
       <button onClick={() => onRemove(ticker.id)}
         style={{ visibility: hovered ? 'visible' : 'hidden', background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: '0 2px', fontFamily: 'monospace' }}

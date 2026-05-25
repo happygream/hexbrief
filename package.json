@@ -77,6 +77,8 @@
       "installerIcon": "build-resources/icon.ico",
       "uninstallerIcon": "build-resources/icon.ico",
       "installerHeaderIcon": "build-resources/icon.ico",
+      "installerSidebar": "build-resources/installerSidebar.bmp",
+      "uninstallerSidebar": "build-resources/installerSidebar.bmp",
       "deleteAppDataOnUninstall": false,
       "menuCategory": "HexBrief",
       "include": "build-resources/installer.nsh",

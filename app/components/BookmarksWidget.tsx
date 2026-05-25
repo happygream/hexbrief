@@ -50,14 +50,14 @@ export default function BookmarksWidget() {
           <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Label (optional)" style={{ marginBottom: 8 }}
             onKeyDown={e => { if (e.key === 'Enter') add(); if (e.key === 'Escape') { setAdding(false); setUrl(''); setTitle(''); } }} />
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={add} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
-            <button onClick={() => { setAdding(false); setUrl(''); setTitle(''); }} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
+            <button onClick={add} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
+            <button onClick={() => { setAdding(false); setUrl(''); setTitle(''); }} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
           </div>
         </div>
       )}
 
       {bookmarks.length === 0 && !adding && (
-        <div style={{ ...mono, fontSize: 10, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No bookmarks yet</div>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No bookmarks yet</div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

@@ -108,14 +108,14 @@ export default function CountdownWidget() {
             <option value="yearly">Repeat yearly</option>
           </select>
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={add} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
-            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
+            <button onClick={add} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'var(--red)', border: 'none', color: 'var(--paper)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Add</button>
+            <button onClick={() => setAdding(false)} style={{ ...mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: 'transparent', border: '1px solid var(--rule2)', color: 'var(--muted)', padding: '5px 12px', cursor: 'pointer', borderRadius: 3 }}>Cancel</button>
           </div>
         </div>
       )}
 
       {sorted.length === 0 && !adding && (
-        <div style={{ ...mono, fontSize: 10, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No countdowns — add payday, holidays or events</div>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>No countdowns — add payday, holidays or events</div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -140,7 +140,7 @@ function CountdownRow({ event, days, onRemove }: { event: CountdownEvent; days: 
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14, color: 'var(--paper)', fontWeight: 400 }}>{event.name}</div>
-        <div style={{ ...mono, fontSize: 9, color: 'var(--muted)', letterSpacing: '0.06em', marginTop: 1 }}>
+        <div style={{ ...mono, fontSize: 11, color: 'var(--muted)', letterSpacing: '0.06em', marginTop: 1 }}>
           {label}{event.repeat && event.repeat !== 'none' ? ` · repeats ${event.repeat}` : ''}
         </div>
       </div>
