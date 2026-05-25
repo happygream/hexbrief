@@ -26,7 +26,7 @@ jobs:
             artifact: dist/*.exe
           - os: macos-latest
             platform: mac
-            artifact: dist/*.dmg
+            artifact: dist/*.zip
           - os: ubuntu-latest
             platform: linux
             artifact: |
@@ -46,10 +46,31 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      # Cache Electron binaries — biggest time saver (~200MB saved per run)
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/AppData/Local/electron/Cache
+            ~/Library/Caches/electron
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
+
+      # Cache electron-builder binaries (NSIS, etc)
+      - name: Cache electron-builder
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron-builder
+            ~/AppData/Local/electron-builder/Cache
+          key: electron-builder-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-builder-${{ runner.os }}-
+
       - name: Install dependencies
         run: npm ci
 
-      # Linux deps for Electron
+      # Linux build deps
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -62,12 +83,11 @@ jobs:
             patchelf \
             rpm
 
-      # macOS — allow unsigned builds for now
       - name: Set macOS environment
         if: matrix.os == 'macos-latest'
         run: echo "CSC_IDENTITY_AUTO_DISCOVERY=false" >> $GITHUB_ENV
 
-      - name: Build Next.js (static export)
+      - name: Build Next.js
         run: npm run build
 
       - name: Package Electron (${{ matrix.platform }})
@@ -131,15 +151,15 @@ jobs:
 
             | Platform | File | Notes |
             |---|---|---|
-            | Windows | `HexBrief-Setup-${{ steps.version.outputs.VERSION }}-x64.exe` | NSIS installer, recommended |
+            | Windows | `HexBrief-Setup-${{ steps.version.outputs.VERSION }}-x64.exe` | Installer — recommended |
             | Windows | `HexBrief-Setup-${{ steps.version.outputs.VERSION }}-ia32.exe` | 32-bit installer |
-            | macOS | `HexBrief-${{ steps.version.outputs.VERSION }}-x64-mac.zip` | Intel Mac — unzip and run |
-            | macOS | `HexBrief-${{ steps.version.outputs.VERSION }}-arm64-mac.zip` | Apple Silicon — unzip and run |
+            | macOS | `HexBrief-${{ steps.version.outputs.VERSION }}-x64-mac.zip` | Intel Mac |
+            | macOS | `HexBrief-${{ steps.version.outputs.VERSION }}-arm64-mac.zip` | Apple Silicon |
             | Linux | `HexBrief-${{ steps.version.outputs.VERSION }}-x64.AppImage` | Universal |
             | Linux | `HexBrief-${{ steps.version.outputs.VERSION }}-amd64.deb` | Debian / Ubuntu |
 
-            > **macOS note:** Right-click → Open on first launch to bypass Gatekeeper until the app is code-signed.
-            > **Linux note:** `chmod +x HexBrief-*.AppImage` before running.
+            > **macOS:** Right-click → Open on first launch to bypass Gatekeeper.
+            > **Linux:** `chmod +x HexBrief-*.AppImage` before running.
 
           draft: ${{ github.event.inputs.draft == 'true' }}
           prerelease: false

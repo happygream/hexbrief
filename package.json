@@ -76,7 +76,11 @@
       "installerHeaderIcon": "build-resources/icon.ico",
       "deleteAppDataOnUninstall": false,
       "menuCategory": "HexBrief",
-      "artifactName": "HexBrief-Setup-${version}-${arch}.exe"
+      "include": "build-resources/installer.nsh",
+      "license": "build-resources/license.txt",
+      "artifactName": "HexBrief-Setup-${version}-${arch}.exe",
+      "installerLanguages": ["en_US"],
+      "language": "1033"
     },
     "mac": {
       "target": [
