@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CalendarEvent, fetchCalendarEvents } from '@/app/lib/calendar';
+import { CalendarEvent } from '@/app/types';
+import { fetchCalendarEvents } from '@/app/lib/calendar';
 
 function fmt(d: Date) { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
 
