@@ -83,6 +83,7 @@
       "deleteAppDataOnUninstall": true,
       "menuCategory": "HexBrief",
       "script": "build-resources/hexbrief-installer.nsi",
+      "warningsAsErrors": false,
       "artifactName": "HexBrief-Setup-${version}-${arch}.exe",
       "installerLanguages": ["en_US"],
       "language": "1033"

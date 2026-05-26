@@ -64,23 +64,11 @@ UninstPage custom un.Progress_Show un.Progress_Leave
   SetCtlColors $0 "" "0x0a0f1e"
 
   ; App name in titlebar
-  ${NSD_CreateLabel} 168u 5u 200u 14u "HexBrief Setup"
+  ${NSD_CreateLabel} 168u 5u 220u 14u "HexBrief Setup"
   Pop $0
   SetCtlColors $0 "0x6070a8" "0x0a0f1e"
   CreateFont $R9 "JetBrains Mono" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
-
-  ; Minimise button
-  ${NSD_CreateButton} 418u 2u 18u 18u "_"
-  Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
-  ${NSD_OnClick} $0 OnMinimise
-
-  ; Close button
-  ${NSD_CreateButton} 438u 2u 18u 18u "x"
-  Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
-  ${NSD_OnClick} $0 OnClose
 !macroend
 
 ; ================================================================
@@ -464,31 +452,6 @@ Function un.Progress_Show
 FunctionEnd
 
 Function un.Progress_Leave
-FunctionEnd
-
-; ================================================================
-; CUSTOM TITLEBAR HANDLERS
-; ================================================================
-Function OnClose
-  MessageBox MB_YESNO|MB_ICONQUESTION "Cancel HexBrief installation?" IDYES quit IDNO done
-  quit:
-    Quit
-  done:
-FunctionEnd
-
-Function OnMinimise
-  System::Call "user32::ShowWindow(i $HWNDPARENT, i 6)"
-FunctionEnd
-
-Function un.OnClose
-  MessageBox MB_YESNO|MB_ICONQUESTION "Cancel HexBrief uninstallation?" IDYES quit IDNO done
-  quit:
-    Quit
-  done:
-FunctionEnd
-
-Function un.OnMinimise
-  System::Call "user32::ShowWindow(i $HWNDPARENT, i 6)"
 FunctionEnd
 
 ; ================================================================
