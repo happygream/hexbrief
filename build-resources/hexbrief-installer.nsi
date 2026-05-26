@@ -254,13 +254,17 @@ Function pg_Install_Show
   ; Copy the correct 7z package to plugins dir, then extract
   ; Use IsWow64Process to detect 64-bit at runtime without LogicLib
   System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
-  StrCmp $0 "1" is64 is32
-  is64:
+  !ifdef APP_32
+    StrCmp $0 "1" is64 is32
+    is64:
+      File /oname=$PLUGINSDIR\app.7z "${APP_64}"
+      Goto doextract
+    is32:
+      File /oname=$PLUGINSDIR\app.7z "${APP_32}"
+    doextract:
+  !else
     File /oname=$PLUGINSDIR\app.7z "${APP_64}"
-    Goto doextract
-  is32:
-    File /oname=$PLUGINSDIR\app.7z "${APP_32}"
-  doextract:
+  !endif
   Nsis7z::Extract "$PLUGINSDIR\app.7z"
 
   SendMessage $hLogLabel ${WM_SETTEXT} 0 "STR:> Creating shortcuts..."
