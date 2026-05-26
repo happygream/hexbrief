@@ -69,6 +69,12 @@ UninstPage custom un.Progress_Show un.Progress_Leave
   SetCtlColors $0 "0x6070a8" "0x0a0f1e"
   CreateFont $R9 "JetBrains Mono" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
+
+  ; Drag handle — invisible label covering titlebar, click triggers window drag
+  ${NSD_CreateLabel} 160u 0 280u 22u ""
+  Pop $R8
+  SetCtlColors $R8 "0x0a0f1e" "0x0a0f1e"
+  ${NSD_OnMouseDown} $R8 OnTitlebarDrag
 !macroend
 
 ; ================================================================
@@ -455,6 +461,21 @@ Function un.Progress_Leave
 FunctionEnd
 
 ; ================================================================
+; DRAG HANDLER — makes frameless window draggable
+; ================================================================
+Function OnTitlebarDrag
+  ; Release mouse capture, then tell Windows this is a caption drag
+  System::Call "user32::ReleaseCapture()"
+  ; WM_NCLBUTTONDOWN = 0xA1, HTCAPTION = 2
+  SendMessage $HWNDPARENT 0xA1 2 0
+FunctionEnd
+
+Function un.OnTitlebarDrag
+  System::Call "user32::ReleaseCapture()"
+  SendMessage $HWNDPARENT 0xA1 2 0
+FunctionEnd
+
+; ================================================================
 ; INSTFILES PAGE SKIP — prevents blank progress window showing
 ; ================================================================
 Function pg_InstFiles_Pre
@@ -494,33 +515,30 @@ FunctionEnd
 
 Function .onGUIInit
   ; ── Remove standard Windows chrome ──────────────────────────────
-  ; Get current window style
   System::Call "user32::GetWindowLong(i $HWNDPARENT, i -16) i .r0"
-  ; Remove WS_CAPTION (0xC00000), WS_THICKFRAME (0x40000), WS_BORDER (0x800000)
-  ; Keep WS_VISIBLE (0x10000000), WS_POPUP (0x80000000)
-  IntOp $1 $0 & 0x3F000000    ; clear title/border bits
-  IntOp $1 $1 | 0x80000000    ; WS_POPUP
+  IntOp $1 $0 & 0x3F000000
+  IntOp $1 $1 | 0x80000000
   System::Call "user32::SetWindowLong(i $HWNDPARENT, i -16, i r1)"
-
-  ; Remove extended styles — no shadow, no taskbar entry style
   System::Call "user32::GetWindowLong(i $HWNDPARENT, i -20) i .r2"
-  IntOp $3 $2 & 0xFFFFFEFF    ; clear WS_EX_WINDOWEDGE
+  IntOp $3 $2 & 0xFFFFFEFF
   System::Call "user32::SetWindowLong(i $HWNDPARENT, i -20, i r3)"
 
-  ; ── Set dark navy background colour ─────────────────────────────
-  System::Call "user32::SetClassLong(i $HWNDPARENT, i -10, i 0x1e0f0a)"
+  ; ── Hide branding bar (Nullsoft Install System text) ─────────────
+  ; The branding text control has ID 1028
+  GetDlgItem $0 $HWNDPARENT 1028
+  ShowWindow $0 0
+  ; Also hide the outer branding panel
+  GetDlgItem $0 $HWNDPARENT 1037
+  ShowWindow $0 0
 
-  ; ── Resize to 500x360 and centre on screen ───────────────────────
+  ; ── Resize to 600x420 and centre ─────────────────────────────────
   System::Call "user32::GetSystemMetrics(i 0) i .r4"
   System::Call "user32::GetSystemMetrics(i 1) i .r5"
-  IntOp $6 $4 - 500
+  IntOp $6 $4 - 600
   IntOp $6 $6 / 2
-  IntOp $7 $5 - 360
+  IntOp $7 $5 - 420
   IntOp $7 $7 / 2
-  ; SWP_FRAMECHANGED (0x20) | SWP_NOZORDER (0x4) | SWP_NOACTIVATE (0x10)
-  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i r6, i r7, i 500, i 360, i 0x24)"
-
-  ; ── Set window title (even though no title bar shows) ────────────
+  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i r6, i r7, i 600, i 420, i 0x24)"
   System::Call "user32::SetWindowText(i $HWNDPARENT, t 'HexBrief Setup')"
 FunctionEnd
 
