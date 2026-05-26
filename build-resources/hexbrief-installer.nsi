@@ -480,6 +480,17 @@ Function OnMinimise
   System::Call "user32::ShowWindow(i $HWNDPARENT, i 6)"
 FunctionEnd
 
+Function un.OnClose
+  MessageBox MB_YESNO|MB_ICONQUESTION "Cancel HexBrief uninstallation?" IDYES quit IDNO done
+  quit:
+    Quit
+  done:
+FunctionEnd
+
+Function un.OnMinimise
+  System::Call "user32::ShowWindow(i $HWNDPARENT, i 6)"
+FunctionEnd
+
 ; ================================================================
 ; INSTFILES PAGE SKIP — prevents blank progress window showing
 ; ================================================================
