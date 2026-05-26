@@ -11,6 +11,10 @@ ShowUninstDetails nevershow
 Caption "HexBrief Setup"
 InstallDir "$LOCALAPPDATA\Programs\HexBrief"
 
+; Set dialog size in dialog units — must match layout dimensions
+; 480u wide x 308u tall (sidebar 160u + content 320u)
+WindowSize 480 308
+
 ; ── Variables ────────────────────────────────────────────────────
 Var hDialog
 Var hProgressBar
@@ -527,21 +531,45 @@ Function .onGUIInit
   System::Call "user32::SetWindowLong(i $HWNDPARENT, i -20, i r3)"
 
   ; ── Hide branding bar (Nullsoft Install System text) ─────────────
-  ; The branding text control has ID 1028
   GetDlgItem $0 $HWNDPARENT 1028
   ShowWindow $0 0
-  ; Also hide the outer branding panel
   GetDlgItem $0 $HWNDPARENT 1037
   ShowWindow $0 0
 
-  ; ── Resize to 600x420 and centre ─────────────────────────────────
-  System::Call "user32::GetSystemMetrics(i 0) i .r4"
-  System::Call "user32::GetSystemMetrics(i 1) i .r5"
-  IntOp $6 $4 - 600
-  IntOp $6 $6 / 2
-  IntOp $7 $5 - 420
-  IntOp $7 $7 / 2
-  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i r6, i r7, i 600, i 420, i 0x24)"
+  ; ── Get the inner dialog child window and resize it ──────────────
+  ; The inner dialog (page area) is the first child of HWNDPARENT
+  ; We need to find it and resize it to fill the full window
+  ; Then resize the outer window to 480x308 (in pixels)
+  ; 480x308 fits our 480u x 308u layout at 96dpi (1:1 dialog units)
+
+  ; Get DPI scale factor to convert dialog units to pixels
+  System::Call "user32::GetDC(i 0) i .r4"
+  System::Call "gdi32::GetDeviceCaps(i r4, i 88) i .r5"  ; LOGPIXELSX
+  System::Call "user32::ReleaseDC(i 0, i r4)"
+
+  ; dialog units: 480 wide, 308 tall
+  ; Convert: pixels = (dialogUnits * dpi) / 96
+  IntOp $6 480 * $5
+  IntOp $6 $6 / 96
+  IntOp $7 308 * $5
+  IntOp $7 $7 / 96
+
+  ; Centre on screen
+  System::Call "user32::GetSystemMetrics(i 0) i .r8"
+  System::Call "user32::GetSystemMetrics(i 1) i .r9"
+  IntOp $R0 $8 - $6
+  IntOp $R0 $R0 / 2
+  IntOp $R1 $9 - $7
+  IntOp $R1 $R1 / 2
+
+  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i $R0, i $R1, i $6, i $7, i 0x24)"
+
+  ; Resize the inner page dialog to fill the entire window
+  FindWindow $R2 "#32770" "" $HWNDPARENT
+  StrCmp $R2 "" no_inner
+    System::Call "user32::MoveWindow(i $R2, i 0, i 0, i $6, i $7, i 1)"
+  no_inner:
+
   System::Call "user32::SetWindowText(i $HWNDPARENT, t 'HexBrief Setup')"
 FunctionEnd
 
