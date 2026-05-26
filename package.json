@@ -81,8 +81,7 @@
       "installerHeader": "build/installerHeader.bmp",
       "deleteAppDataOnUninstall": true,
       "menuCategory": "HexBrief",
-      "script": "build-resources/hexbrief-installer.nsi",
-      "warningsAsErrors": false,
+      "include": "build-resources/installer.nsh",
       "artifactName": "HexBrief-Setup-${version}-${arch}.exe",
       "installerLanguages": ["en_US"],
       "language": "1033"
