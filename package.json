@@ -1,6 +1,6 @@
 {
   "name": "hexbrief",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Your personal morning dashboard",
   "author": {
     "name": "HexBrief",
@@ -53,14 +53,13 @@
         {
           "target": "nsis",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         },
         {
-          "target": "portable",
+          "target": "nsis",
           "arch": [
-            "x64"
+            "ia32"
           ]
         }
       ],
