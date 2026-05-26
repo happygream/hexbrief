@@ -37,8 +37,11 @@ UninstPage custom un.Progress_Show un.Progress_Leave
 
 ; ================================================================
 ; SHARED: Draw sidebar (called on every page)
+; Pass drag handler name as parameter:
+;   installer pages: OnTitlebarDrag
+;   uninstaller pages: un.OnTitlebarDrag
 ; ================================================================
-!macro HB_Sidebar
+!macro HB_Sidebar dragHandler
   ${NSD_CreateBitmap} 0 0 160u 100%u ""
   Pop $0
   ${NSD_SetImage} $0 "${BUILD_RESOURCES_DIR}\installerSidebar.bmp" $1
@@ -70,11 +73,11 @@ UninstPage custom un.Progress_Show un.Progress_Leave
   CreateFont $R9 "JetBrains Mono" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ; Drag handle — invisible label covering titlebar, click triggers window drag
+  ; Drag handle — covers titlebar, click triggers window drag
   ${NSD_CreateLabel} 160u 0 280u 22u ""
   Pop $R8
   SetCtlColors $R8 "0x0a0f1e" "0x0a0f1e"
-  ${NSD_OnMouseDown} $R8 OnTitlebarDrag
+  ${NSD_OnClick} $R8 ${dragHandler}
 !macroend
 
 ; ================================================================
@@ -154,7 +157,7 @@ Function pg_Welcome_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar OnTitlebarDrag
   !insertmacro HB_Header "Welcome to HexBrief" "Personal morning dashboard installer" "red"
   !insertmacro HB_Dots "1"
 
@@ -190,7 +193,7 @@ Function pg_Options_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar OnTitlebarDrag
   !insertmacro HB_Header "Install location" "Choose where to install HexBrief" "red"
   !insertmacro HB_Dots "2"
 
@@ -234,7 +237,7 @@ Function pg_Install_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar OnTitlebarDrag
   !insertmacro HB_Header "Installing..." "Please wait while files are extracted" "red"
   !insertmacro HB_Dots "3"
 
@@ -338,7 +341,7 @@ Function pg_Finish_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar OnTitlebarDrag
   !insertmacro HB_Header "Installation complete" "HexBrief ${VERSION} is ready" "green"
   !insertmacro HB_Dots "4"
 
@@ -375,7 +378,7 @@ Function un.Confirm_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar un.OnTitlebarDrag
   !insertmacro HB_Header "Uninstall HexBrief" "Remove HexBrief from your computer" "red"
 
   ${NSD_CreateLabel} 172u 66u 298u 32u "This will remove HexBrief and all its files, including your saved settings, tasks and preferences."
@@ -402,7 +405,7 @@ Function un.Progress_Show
   Pop $hDialog
   SetCtlColors $hDialog "" "0x161e35"
 
-  !insertmacro HB_Sidebar
+  !insertmacro HB_Sidebar un.OnTitlebarDrag
   !insertmacro HB_Header "Removing HexBrief..." "Cleaning up files and registry entries" "red"
 
   ${NSD_CreateProgressBar} 172u 80u 298u 14u ""
