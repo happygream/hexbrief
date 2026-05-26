@@ -1,168 +1,24 @@
-; HexBrief NSIS customisation
-; Dialog dimensions: 497x312 dialog units. Sidebar: 164du wide. Content: 333du wide.
+; HexBrief NSIS installer
+; customHeader MUST be empty — electron-builder pre-defines everything before it runs
+; All customisation goes in customWelcomePage and customFinishPage
 
-; ================================================================
-; WELCOME PAGE
-; ================================================================
+!macro customHeader
+!macroend
+
 !macro customWelcomePage
-  Page custom hb_welcome_show hb_welcome_leave
-
-  Function hb_welcome_show
-    nsDialogs::Create 1018
-    Pop $0
-    SetCtlColors $0 "" "0x0a0f1e"
-
-    ; Sidebar BMP (164x314px = 164x312du)
-    ${NSD_CreateBitmap} 0 0 164u 312u ""
-    Pop $1
-    ${NSD_SetImage} $1 "${MUI_WELCOMEFINISHPAGE_BITMAP}" $2
-
-    ; Red top accent bar
-    ${NSD_CreateLabel} 0 0 164u 4u ""
-    Pop $1
-    SetCtlColors $1 "" "0xe8412a"
-
-    ; Red right edge
-    ${NSD_CreateLabel} 161u 0 3u 312u ""
-    Pop $1
-    SetCtlColors $1 "" "0xe8412a"
-
-    ; Content area background (333du wide)
-    ${NSD_CreateLabel} 164u 0 333u 312u ""
-    Pop $1
-    SetCtlColors $1 "" "0x0a0f1e"
-
-    ; Header bar
-    ${NSD_CreateLabel} 164u 0 333u 50u ""
-    Pop $1
-    SetCtlColors $1 "" "0x0f1629"
-
-    ; Red header underline
-    ${NSD_CreateLabel} 164u 49u 333u 2u ""
-    Pop $1
-    SetCtlColors $1 "" "0xe8412a"
-
-    ; Title
-    ${NSD_CreateLabel} 176u 12u 310u 18u "Welcome to HexBrief"
-    Pop $1
-    SetCtlColors $1 "0xf0f2f8" "0x0f1629"
-    CreateFont $R9 "Segoe UI" 13 700
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ; Subtitle
-    ${NSD_CreateLabel} 176u 32u 310u 13u "Personal morning dashboard installer"
-    Pop $1
-    SetCtlColors $1 "0x6070a8" "0x0f1629"
-    CreateFont $R9 "Courier New" 8 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ; Body line 1
-    ${NSD_CreateLabel} 176u 62u 310u 14u "HexBrief is your personal morning dashboard."
-    Pop $1
-    SetCtlColors $1 "0xf0f2f8" "0x0a0f1e"
-    CreateFont $R9 "Segoe UI" 10 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ; Body line 2
-    ${NSD_CreateLabel} 176u 80u 310u 36u "Weather, tasks, headlines and calendar in one place. No accounts. No tracking. No subscriptions."
-    Pop $1
-    SetCtlColors $1 "0x9aa5c8" "0x0a0f1e"
-    CreateFont $R9 "Segoe UI" 9 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ; Prompt
-    ${NSD_CreateLabel} 176u 124u 310u 13u "Click Next to continue."
-    Pop $1
-    SetCtlColors $1 "0x6070a8" "0x0a0f1e"
-    CreateFont $R9 "Segoe UI" 9 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    nsDialogs::Show
-  FunctionEnd
-
-  Function hb_welcome_leave
-  FunctionEnd
+  !define MUI_WELCOMEPAGE_TITLE "Welcome to HexBrief"
+  !define MUI_WELCOMEPAGE_TEXT "Your personal morning dashboard.$\r$\n$\r$\nWeather, tasks, headlines and calendar in one place.$\r$\nNo accounts. No tracking. No subscriptions.$\r$\n$\r$\nClick Next to continue."
+  !insertmacro MUI_PAGE_WELCOME
 !macroend
 
-; ================================================================
-; FINISH PAGE
-; ================================================================
 !macro customFinishPage
-  Var hb_launch_check
-
-  Page custom hb_finish_show
-
-  Function hb_finish_show
-    nsDialogs::Create 1018
-    Pop $0
-    SetCtlColors $0 "" "0x0a0f1e"
-
-    ${NSD_CreateBitmap} 0 0 164u 312u ""
-    Pop $1
-    ${NSD_SetImage} $1 "${MUI_WELCOMEFINISHPAGE_BITMAP}" $2
-
-    ${NSD_CreateLabel} 0 0 164u 4u ""
-    Pop $1
-    SetCtlColors $1 "" "0xe8412a"
-
-    ${NSD_CreateLabel} 161u 0 3u 312u ""
-    Pop $1
-    SetCtlColors $1 "" "0xe8412a"
-
-    ${NSD_CreateLabel} 164u 0 333u 312u ""
-    Pop $1
-    SetCtlColors $1 "" "0x0a0f1e"
-
-    ; Green header for success
-    ${NSD_CreateLabel} 164u 0 333u 50u ""
-    Pop $1
-    SetCtlColors $1 "" "0x0d1f0d"
-
-    ${NSD_CreateLabel} 164u 49u 333u 2u ""
-    Pop $1
-    SetCtlColors $1 "" "0x4caf50"
-
-    ${NSD_CreateLabel} 176u 12u 310u 18u "Installation complete"
-    Pop $1
-    SetCtlColors $1 "0xa5d6a7" "0x0d1f0d"
-    CreateFont $R9 "Segoe UI" 13 700
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ${NSD_CreateLabel} 176u 32u 310u 13u "HexBrief v${VERSION} is ready"
-    Pop $1
-    SetCtlColors $1 "0x4a7a4a" "0x0d1f0d"
-    CreateFont $R9 "Courier New" 8 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ${NSD_CreateLabel} 176u 62u 310u 14u "Installed successfully."
-    Pop $1
-    SetCtlColors $1 "0xf0f2f8" "0x0a0f1e"
-    CreateFont $R9 "Segoe UI" 10 500
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ${NSD_CreateLabel} 176u 80u 310u 28u "Open it each morning for your daily brief."
-    Pop $1
-    SetCtlColors $1 "0x9aa5c8" "0x0a0f1e"
-    CreateFont $R9 "Segoe UI" 9 400
-    SendMessage $1 ${WM_SETFONT} $R9 0
-
-    ${NSD_CreateCheckbox} 178u 118u 300u 14u "Launch HexBrief now"
-    Pop $hb_launch_check
-    SetCtlColors $hb_launch_check "0xf0f2f8" "0x0a0f1e"
-    ${NSD_SetState} $hb_launch_check ${BST_CHECKED}
-
-    nsDialogs::Show
-
-    ${NSD_GetState} $hb_launch_check $0
-    IntCmp $0 ${BST_CHECKED} 0 hb_skip_launch hb_skip_launch
-      Exec '"$INSTDIR\HexBrief.exe"'
-    hb_skip_launch:
-  FunctionEnd
+  !define MUI_FINISHPAGE_TITLE "HexBrief is ready"
+  !define MUI_FINISHPAGE_TEXT "Installed successfully.$\r$\n$\r$\nOpen it each morning for your daily brief."
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\HexBrief.exe"
+  !define MUI_FINISHPAGE_RUN_TEXT "Launch HexBrief now"
+  !insertmacro MUI_PAGE_FINISH
 !macroend
 
-; ================================================================
-; INSTALL / UNINSTALL EXTRAS
-; ================================================================
 !macro customInstall
   WriteRegStr HKCU "Software\HexBrief" "InstallPath" "$INSTDIR"
   WriteRegStr HKCU "Software\HexBrief" "Version" "${VERSION}"
@@ -170,6 +26,28 @@
 !macroend
 
 !macro customUnInstall
-  DeleteRegKey HKCU "Software\HexBrief"
+  DetailPrint "Closing HexBrief if running..."
+  nsProcess::_FindProcess "HexBrief.exe"
+  Pop $R0
+  ${If} $R0 == 0
+    nsProcess::_KillProcess "HexBrief.exe"
+    Sleep 1000
+  ${EndIf}
+
+  DetailPrint "Removing app data..."
+  RMDir /r "$APPDATA\HexBrief"
+  RMDir /r "$LOCALAPPDATA\HexBrief"
+
+  DetailPrint "Removing shortcuts..."
+  Delete "$DESKTOP\HexBrief.lnk"
   Delete "$QUICKLAUNCH\HexBrief.lnk"
+  Delete "$STARTMENU\Programs\HexBrief\HexBrief.lnk"
+  RMDir "$STARTMENU\Programs\HexBrief"
+  Delete "$SMSTARTUP\HexBrief.lnk"
+
+  DetailPrint "Cleaning registry..."
+  DeleteRegKey HKCU "Software\HexBrief"
+  DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "HexBrief"
+
+  DetailPrint "HexBrief has been completely removed."
 !macroend
