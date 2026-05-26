@@ -80,7 +80,7 @@
       "uninstallerSidebar": "build/installerSidebar.bmp",
       "deleteAppDataOnUninstall": true,
       "menuCategory": "HexBrief",
-      "include": "build-resources/installer.nsh",
+      "script": "build-resources/hexbrief-installer.nsi",
       "warningsAsErrors": false,
       "artifactName": "HexBrief-Setup-${version}-${arch}.exe",
       "installerLanguages": ["en_US"],
