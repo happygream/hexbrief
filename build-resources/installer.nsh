@@ -162,18 +162,6 @@
 !macroend
 
 ; ================================================================
-; HEADER — hides the stock MUI header image bar on middle pages
-; ================================================================
-!macro customHeader
-  Function .onGUIInit
-    GetDlgItem $0 $HWNDPARENT 1028
-    ShowWindow $0 0
-    GetDlgItem $0 $HWNDPARENT 1037
-    ShowWindow $0 0
-  FunctionEnd
-!macroend
-
-; ================================================================
 ; INSTALL / UNINSTALL EXTRAS
 ; ================================================================
 !macro customInstall
