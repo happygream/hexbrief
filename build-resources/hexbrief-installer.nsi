@@ -8,6 +8,8 @@
 
 ShowInstDetails nevershow
 ShowUninstDetails nevershow
+Caption "HexBrief Setup"
+InstallDir "$LOCALAPPDATA\Programs\HexBrief"
 
 ; ── Variables ────────────────────────────────────────────────────
 Var hDialog
@@ -55,6 +57,30 @@ UninstPage custom un.Progress_Show un.Progress_Leave
   ${NSD_CreateLabel} 154u 0 3u 100%u ""
   Pop $0
   SetCtlColors $0 "" "0x0f1629"
+
+  ; Custom titlebar strip across top of content area
+  ${NSD_CreateLabel} 160u 0 340u 22u ""
+  Pop $0
+  SetCtlColors $0 "" "0x0a0f1e"
+
+  ; App name in titlebar
+  ${NSD_CreateLabel} 168u 5u 200u 14u "HexBrief Setup"
+  Pop $0
+  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  CreateFont $R9 "JetBrains Mono" 8 400
+  SendMessage $0 ${WM_SETFONT} $R9 0
+
+  ; Minimise button
+  ${NSD_CreateButton} 418u 2u 18u 18u "_"
+  Pop $0
+  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  ${NSD_OnClick} $0 OnMinimise
+
+  ; Close button
+  ${NSD_CreateButton} 438u 2u 18u 18u "x"
+  Pop $0
+  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  ${NSD_OnClick} $0 OnClose
 !macroend
 
 ; ================================================================
@@ -62,29 +88,28 @@ UninstPage custom un.Progress_Show un.Progress_Leave
 ; $R0 = title, $R1 = subtitle, $R2 = accent colour (0=red, 1=green)
 ; ================================================================
 !macro HB_Header title subtitle accentcol
-  ${NSD_CreateLabel} 160u 0 320u 52u ""
+  ${NSD_CreateLabel} 160u 22u 340u 34u ""
   Pop $0
   SetCtlColors $0 "" "0x0a0f1e"
 
-  ${NSD_CreateLabel} 172u 10u 300u 20u "${title}"
+  ${NSD_CreateLabel} 172u 28u 300u 16u "${title}"
   Pop $0
   SetCtlColors $0 "0xf0f2f8" "0x0a0f1e"
-  CreateFont $R9 "DM Sans" 12 700
+  CreateFont $R9 "DM Sans" 11 700
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 172u 33u 300u 14u "${subtitle}"
+  ${NSD_CreateLabel} 172u 46u 300u 12u "${subtitle}"
   Pop $0
   SetCtlColors $0 "0x6070a8" "0x0a0f1e"
   CreateFont $R9 "Courier New" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ; Accent bottom border
   !if "${accentcol}" == "green"
-    ${NSD_CreateLabel} 160u 50u 320u 3u ""
+    ${NSD_CreateLabel} 160u 58u 340u 3u ""
     Pop $0
     SetCtlColors $0 "" "0x4caf50"
   !else
-    ${NSD_CreateLabel} 160u 50u 320u 3u ""
+    ${NSD_CreateLabel} 160u 58u 340u 3u ""
     Pop $0
     SetCtlColors $0 "" "0xe8412a"
   !endif
@@ -442,6 +467,20 @@ Function un.Progress_Leave
 FunctionEnd
 
 ; ================================================================
+; CUSTOM TITLEBAR HANDLERS
+; ================================================================
+Function OnClose
+  MessageBox MB_YESNO|MB_ICONQUESTION "Cancel HexBrief installation?" IDYES quit IDNO done
+  quit:
+    Quit
+  done:
+FunctionEnd
+
+Function OnMinimise
+  System::Call "user32::ShowWindow(i $HWNDPARENT, i 6)"
+FunctionEnd
+
+; ================================================================
 ; INSTFILES PAGE SKIP — prevents blank progress window showing
 ; ================================================================
 Function pg_InstFiles_Pre
@@ -476,6 +515,39 @@ Function .onInit
     WriteUninstaller "${UNINSTALLER_OUT_FILE}"
     Quit
   !endif
+FunctionEnd
+
+
+Function .onGUIInit
+  ; ── Remove standard Windows chrome ──────────────────────────────
+  ; Get current window style
+  System::Call "user32::GetWindowLong(i $HWNDPARENT, i -16) i .r0"
+  ; Remove WS_CAPTION (0xC00000), WS_THICKFRAME (0x40000), WS_BORDER (0x800000)
+  ; Keep WS_VISIBLE (0x10000000), WS_POPUP (0x80000000)
+  IntOp $1 $0 & 0x3F000000    ; clear title/border bits
+  IntOp $1 $1 | 0x80000000    ; WS_POPUP
+  System::Call "user32::SetWindowLong(i $HWNDPARENT, i -16, i r1)"
+
+  ; Remove extended styles — no shadow, no taskbar entry style
+  System::Call "user32::GetWindowLong(i $HWNDPARENT, i -20) i .r2"
+  IntOp $3 $2 & 0xFFFFFEFF    ; clear WS_EX_WINDOWEDGE
+  System::Call "user32::SetWindowLong(i $HWNDPARENT, i -20, i r3)"
+
+  ; ── Set dark navy background colour ─────────────────────────────
+  System::Call "user32::SetClassLong(i $HWNDPARENT, i -10, i 0x1e0f0a)"
+
+  ; ── Resize to 500x360 and centre on screen ───────────────────────
+  System::Call "user32::GetSystemMetrics(i 0) i .r4"
+  System::Call "user32::GetSystemMetrics(i 1) i .r5"
+  IntOp $6 $4 - 500
+  IntOp $6 $6 / 2
+  IntOp $7 $5 - 360
+  IntOp $7 $7 / 2
+  ; SWP_FRAMECHANGED (0x20) | SWP_NOZORDER (0x4) | SWP_NOACTIVATE (0x10)
+  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i r6, i r7, i 500, i 360, i 0x24)"
+
+  ; ── Set window title (even though no title bar shows) ────────────
+  System::Call "user32::SetWindowText(i $HWNDPARENT, t 'HexBrief Setup')"
 FunctionEnd
 
 Function un.onInit
