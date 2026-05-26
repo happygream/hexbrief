@@ -252,17 +252,24 @@ Function pg_Install_Show
   SendMessage $hProgressBar ${PBM_SETPOS} 15 0
 
   ; Copy the correct 7z package to plugins dir, then extract
-  ; Use IsWow64Process to detect 64-bit at runtime without LogicLib
-  System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
+  ; Guards handle three cases: combined (both), x64-only, ia32-only
   !ifdef APP_32
-    StrCmp $0 "1" is64 is32
-    is64:
-      File /oname=$PLUGINSDIR\app.7z "${APP_64}"
-      Goto doextract
-    is32:
+    !ifdef APP_64
+      ; Combined build — detect arch at runtime
+      System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
+      StrCmp $0 "1" hb_is64 hb_is32
+      hb_is64:
+        File /oname=$PLUGINSDIR\app.7z "${APP_64}"
+        Goto hb_extract
+      hb_is32:
+        File /oname=$PLUGINSDIR\app.7z "${APP_32}"
+      hb_extract:
+    !else
+      ; ia32-only build
       File /oname=$PLUGINSDIR\app.7z "${APP_32}"
-    doextract:
+    !endif
   !else
+    ; x64-only build
     File /oname=$PLUGINSDIR\app.7z "${APP_64}"
   !endif
   Nsis7z::Extract "$PLUGINSDIR\app.7z"
