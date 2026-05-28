@@ -1,6 +1,7 @@
 ; HexBrief Full Custom NSIS Installer
-; All pages custom via nsDialogs
-; sharedHeader provides: Unicode, Name, BrandingText, common.nsh
+; electron-builder injects: Unicode, Name, OutFile, VIProductVersion,
+; BrandingText, MUI_WELCOMEFINISHPAGE_BITMAP, APP_32/APP_64, VERSION
+; Do NOT redeclare any of the above.
 
 !include "nsDialogs.nsh"
 
@@ -33,33 +34,33 @@ UninstPage instfiles "" "" un.pg_Instfiles_Pre
 UninstPage custom un.pg_Done_Show
 
 ; ================================================================
-; SHARED SIDEBAR MACRO
-; Draws: sidebar BMP, red top bar, red right edge, dark content bg
+; SHARED SIDEBAR — draws sidebar BMP + dark content area
+; No red borders (they were causing the split-box visual)
 ; ================================================================
 !macro HB_Sidebar
+  ; Sidebar image (164u wide, full height)
   ${NSD_CreateBitmap} 0u 0u 164u 100%u ""
   Pop $0
   ${NSD_SetImage} $0 "${MUI_WELCOMEFINISHPAGE_BITMAP}" $1
 
-  ${NSD_CreateLabel} 0u 0u 164u 3u ""
+  ; Thin vertical divider between sidebar and content
+  ${NSD_CreateLabel} 163u 0u 1u 100%u ""
   Pop $0
-  SetCtlColors $0 "" "0xe8412a"
+  SetCtlColors $0 "" "0x1a1f3a"
 
-  ${NSD_CreateLabel} 161u 0u 3u 100%u ""
+  ; Dark content area background
+  ${NSD_CreateLabel} 164u 0u 336u 100%u ""
   Pop $0
-  SetCtlColors $0 "" "0xe8412a"
-
-  ${NSD_CreateLabel} 164u 0u 333u 100%u ""
-  Pop $0
-  SetCtlColors $0 "" "0x0a0f1e"
+  SetCtlColors $0 "" "0x080d1e"
 !macroend
 
 ; ================================================================
-; SHARED HEADER MACRO
+; SHARED HEADER — title + subtitle + accent line
 ; accentcol: "red" or "green"
 ; ================================================================
 !macro HB_Header title subtitle accentcol
-  ${NSD_CreateLabel} 164u 0u 333u 50u ""
+  ; Header background strip
+  ${NSD_CreateLabel} 164u 0u 336u 52u ""
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "" "0x0d1f0d"
@@ -67,7 +68,8 @@ UninstPage custom un.pg_Done_Show
     SetCtlColors $0 "" "0x0f1629"
   !endif
 
-  ${NSD_CreateLabel} 176u 10u 290u 18u "${title}"
+  ; Title
+  ${NSD_CreateLabel} 178u 10u 300u 18u "${title}"
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "0xa5d6a7" "0x0d1f0d"
@@ -77,7 +79,8 @@ UninstPage custom un.pg_Done_Show
   CreateFont $R9 "Segoe UI" 10 700
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 176u 32u 290u 12u "${subtitle}"
+  ; Subtitle
+  ${NSD_CreateLabel} 178u 32u 300u 12u "${subtitle}"
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "0x4a7a4a" "0x0d1f0d"
@@ -87,7 +90,8 @@ UninstPage custom un.pg_Done_Show
   CreateFont $R9 "Courier New" 7 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 164u 50u 333u 2u ""
+  ; Accent line below header
+  ${NSD_CreateLabel} 164u 52u 336u 2u ""
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "" "0x4caf50"
@@ -102,26 +106,26 @@ UninstPage custom un.pg_Done_Show
 Function pg_Welcome_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
   !insertmacro HB_Header "Welcome to HexBrief" "Personal morning dashboard installer" "red"
 
-  ${NSD_CreateLabel} 176u 62u 290u 14u "HexBrief is your personal morning dashboard."
+  ${NSD_CreateLabel} 178u 64u 300u 14u "HexBrief is your personal morning dashboard."
   Pop $0
-  SetCtlColors $0 "0xf0f2f8" "0x0a0f1e"
-  CreateFont $R9 "Segoe UI" 9 400
+  SetCtlColors $0 "0xf0f2f8" "0x080d1e"
+  CreateFont $R9 "Segoe UI" 9 600
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 176u 80u 290u 40u "Weather, tasks, headlines and calendar in one place. No accounts. No tracking. No subscriptions."
+  ${NSD_CreateLabel} 178u 82u 300u 40u "Weather, tasks, headlines and calendar in one place. No accounts. No tracking. No subscriptions."
   Pop $0
-  SetCtlColors $0 "0x9aa5c8" "0x0a0f1e"
+  SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 176u 128u 290u 12u "Click Next to continue."
+  ${NSD_CreateLabel} 178u 132u 300u 12u "Click Next to continue."
   Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
@@ -137,28 +141,28 @@ FunctionEnd
 Function pg_Options_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
   !insertmacro HB_Header "Install location" "Choose where to install HexBrief" "red"
 
-  ${NSD_CreateLabel} 176u 62u 160u 12u "Destination folder:"
+  ${NSD_CreateLabel} 178u 64u 180u 12u "Destination folder:"
   Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateDirRequest} 176u 78u 290u 14u "$InstDir_"
+  ${NSD_CreateDirRequest} 178u 80u 290u 14u "$InstDir_"
   Pop $hDirReq
 
-  ${NSD_CreateCheckbox} 178u 98u 280u 14u "Create desktop shortcut"
+  ${NSD_CreateCheckbox} 180u 102u 280u 14u "Create desktop shortcut"
   Pop $hDesktopCheck
-  SetCtlColors $hDesktopCheck "0xf0f2f8" "0x0a0f1e"
+  SetCtlColors $hDesktopCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hDesktopCheck ${BST_CHECKED}
 
-  ${NSD_CreateCheckbox} 178u 116u 280u 14u "Add to Start Menu"
+  ${NSD_CreateCheckbox} 180u 120u 280u 14u "Add to Start Menu"
   Pop $hStartCheck
-  SetCtlColors $hStartCheck "0xf0f2f8" "0x0a0f1e"
+  SetCtlColors $hStartCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hStartCheck ${BST_CHECKED}
 
   nsDialogs::Show
@@ -177,31 +181,27 @@ FunctionEnd
 Function pg_Install_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
   !insertmacro HB_Header "Installing..." "Please wait while files are extracted" "red"
 
-  ${NSD_CreateLabel} 176u 62u 290u 12u "Extracting application files:"
+  ${NSD_CreateLabel} 178u 64u 300u 12u "Extracting application files:"
   Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateProgressBar} 176u 78u 290u 12u ""
+  ${NSD_CreateProgressBar} 178u 80u 290u 12u ""
   Pop $hProgress
   SendMessage $hProgress ${PBM_SETRANGE} 0 0x640000
   SendMessage $hProgress ${PBM_SETPOS} 0 0
 
-  ${NSD_CreateLabel} 176u 94u 290u 12u ""
+  ${NSD_CreateLabel} 178u 96u 290u 12u ""
   Pop $hLog
-  SetCtlColors $hLog "0x6070a8" "0x0a0f1e"
+  SetCtlColors $hLog "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
   SendMessage $hLog ${WM_SETFONT} $R9 0
-
-  ${NSD_CreateLabel} 176u 110u 290u 60u ""
-  Pop $0
-  SetCtlColors $0 "" "0x050a14"
 
   nsDialogs::Show
 
@@ -276,26 +276,26 @@ FunctionEnd
 Function pg_Finish_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
   !insertmacro HB_Header "Installation complete" "HexBrief ${VERSION} is ready" "green"
 
-  ${NSD_CreateLabel} 176u 62u 290u 14u "Installed successfully."
+  ${NSD_CreateLabel} 178u 64u 300u 14u "Installed successfully."
   Pop $0
-  SetCtlColors $0 "0xf0f2f8" "0x0a0f1e"
-  CreateFont $R9 "Segoe UI" 9 500
+  SetCtlColors $0 "0xf0f2f8" "0x080d1e"
+  CreateFont $R9 "Segoe UI" 9 600
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 176u 80u 290u 28u "Open it each morning for your daily brief."
+  ${NSD_CreateLabel} 178u 82u 300u 28u "Open it each morning for your daily brief."
   Pop $0
-  SetCtlColors $0 "0x9aa5c8" "0x0a0f1e"
+  SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateCheckbox} 178u 116u 280u 14u "Launch HexBrief now"
+  ${NSD_CreateCheckbox} 180u 118u 280u 14u "Launch HexBrief now"
   Pop $hLaunchCheck
-  SetCtlColors $hLaunchCheck "0xf0f2f8" "0x0a0f1e"
+  SetCtlColors $hLaunchCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hLaunchCheck ${BST_CHECKED}
 
   nsDialogs::Show
@@ -312,20 +312,22 @@ FunctionEnd
 Function un.pg_Confirm_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
   !insertmacro HB_Header "Uninstall HexBrief" "Remove HexBrief from your computer" "red"
 
-  ${NSD_CreateLabel} 176u 62u 290u 40u "This will remove HexBrief and all its files, including your saved settings, tasks and preferences."
+  ${NSD_CreateLabel} 178u 64u 300u 40u "This will remove HexBrief and all its files, including your saved settings, tasks and preferences."
   Pop $0
-  SetCtlColors $0 "0x9aa5c8" "0x0a0f1e"
+  SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 176u 108u 290u 12u "Click Uninstall to continue."
+  ${NSD_CreateLabel} 178u 110u 300u 12u "Click Uninstall to continue."
   Pop $0
-  SetCtlColors $0 "0x6070a8" "0x0a0f1e"
+  SetCtlColors $0 "0x5060a0" "0x080d1e"
+  CreateFont $R9 "Segoe UI" 8 400
+  SendMessage $0 ${WM_SETFONT} $R9 0
 
   nsDialogs::Show
 FunctionEnd
@@ -338,49 +340,25 @@ Function un.pg_Instfiles_Pre
 FunctionEnd
 
 ; ================================================================
-; UNINSTALLER — PROGRESS + DONE
+; UNINSTALLER — DONE
 ; ================================================================
 Function un.pg_Done_Show
   nsDialogs::Create 1018
   Pop $hDlg
-  SetCtlColors $hDlg "" "0x0a0f1e"
+  SetCtlColors $hDlg "" "0x080d1e"
 
   !insertmacro HB_Sidebar
+  !insertmacro HB_Header "Uninstall complete" "HexBrief has been removed" "green"
 
-  ; Run the uninstall during this page show
-  ${NSD_CreateLabel} 164u 0u 333u 50u ""
+  ${NSD_CreateLabel} 178u 64u 300u 14u "HexBrief has been removed from your computer."
   Pop $0
-  SetCtlColors $0 "" "0x0d1f0d"
-
-  ${NSD_CreateLabel} 164u 50u 333u 2u ""
-  Pop $0
-  SetCtlColors $0 "" "0x4caf50"
-
-  ${NSD_CreateLabel} 176u 10u 290u 18u "Uninstall complete"
-  Pop $0
-  SetCtlColors $0 "0xa5d6a7" "0x0d1f0d"
-  CreateFont $R9 "Segoe UI" 10 700
-  SendMessage $0 ${WM_SETFONT} $R9 0
-
-  ${NSD_CreateLabel} 176u 32u 290u 12u "HexBrief has been removed"
-  Pop $0
-  SetCtlColors $0 "0x4a7a4a" "0x0d1f0d"
-  CreateFont $R9 "Courier New" 7 400
-  SendMessage $0 ${WM_SETFONT} $R9 0
-
-  ${NSD_CreateLabel} 164u 50u 333u 2u ""
-  Pop $0
-  SetCtlColors $0 "" "0x4caf50"
-
-  ${NSD_CreateLabel} 176u 62u 290u 14u "HexBrief has been removed from your computer."
-  Pop $0
-  SetCtlColors $0 "0xf0f2f8" "0x0a0f1e"
+  SetCtlColors $0 "0xf0f2f8" "0x080d1e"
   CreateFont $R9 "Segoe UI" 9 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
   nsDialogs::Show
 
-  ; Do the actual uninstall work
+  ; Do the actual uninstall work after page shows
   nsProcess::_FindProcess "HexBrief.exe"
   Pop $0
   IntCmp $0 0 0 hb_un_skip_kill hb_un_skip_kill
@@ -415,26 +393,24 @@ SectionEnd
 ; INIT
 ; ================================================================
 Function .onGUIInit
-  ; Strip all window chrome — title bar, border, resize handle
-  ; Set style to WS_POPUP (0x80000000) | WS_VISIBLE (0x10000000) only
+  ; Strip title bar — keep only WS_POPUP | WS_VISIBLE
   System::Call "user32::GetWindowLong(i $HWNDPARENT, i -16) i .r0"
-  IntOp $1 $0 & 0x10000000       ; keep WS_VISIBLE
-  IntOp $1 $1 | 0x80000000       ; add WS_POPUP
+  IntOp $1 $0 & 0x10000000
+  IntOp $1 $1 | 0x80000000
   System::Call "user32::SetWindowLong(i $HWNDPARENT, i -16, i r1)"
 
-  ; Remove WS_EX_WINDOWEDGE and WS_EX_CLIENTEDGE from extended style
+  ; Remove WS_EX_WINDOWEDGE and WS_EX_CLIENTEDGE (causes red border)
   System::Call "user32::GetWindowLong(i $HWNDPARENT, i -20) i .r2"
   IntOp $3 $2 & 0xFFFFFEFE
   System::Call "user32::SetWindowLong(i $HWNDPARENT, i -20, i r3)"
 
-  ; Hide NSIS branding bar (control IDs 1028 and 1037)
+  ; Hide NSIS branding bar
   GetDlgItem $4 $HWNDPARENT 1028
   ShowWindow $4 0
   GetDlgItem $4 $HWNDPARENT 1037
   ShowWindow $4 0
 
-  ; Force frame change so Windows redraws without chrome
-  ; SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED = 0x27
+  ; Apply frame change
   System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i 0, i 0, i 0, i 0, i 0x27)"
 FunctionEnd
 
