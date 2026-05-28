@@ -1,10 +1,6 @@
 ; HexBrief Full Custom NSIS Installer
 ; All pages custom via nsDialogs
-; Dialog: 315u x 193u. Sidebar: 109u wide. Content: 206u wide (starts at 109u).
-; Verified coordinates from MUI2 Welcome.nsh source.
-; No LogicLib. No WindowSize. No duplicate functions.
-
-Unicode true
+; sharedHeader provides: Unicode, Name, BrandingText, common.nsh
 
 !include "nsDialogs.nsh"
 
@@ -12,7 +8,6 @@ ShowInstDetails nevershow
 ShowUninstDetails nevershow
 Caption "HexBrief Setup"
 InstallDir "$LOCALAPPDATA\Programs\HexBrief"
-BrandingText "HexBrief ${VERSION}"
 
 ; ── Variables ────────────────────────────────────────────────────
 Var hDlg
@@ -419,6 +414,30 @@ SectionEnd
 ; ================================================================
 ; INIT
 ; ================================================================
+Function .onGUIInit
+  ; Strip all window chrome — title bar, border, resize handle
+  ; Set style to WS_POPUP (0x80000000) | WS_VISIBLE (0x10000000) only
+  System::Call "user32::GetWindowLong(i $HWNDPARENT, i -16) i .r0"
+  IntOp $1 $0 & 0x10000000       ; keep WS_VISIBLE
+  IntOp $1 $1 | 0x80000000       ; add WS_POPUP
+  System::Call "user32::SetWindowLong(i $HWNDPARENT, i -16, i r1)"
+
+  ; Remove WS_EX_WINDOWEDGE and WS_EX_CLIENTEDGE from extended style
+  System::Call "user32::GetWindowLong(i $HWNDPARENT, i -20) i .r2"
+  IntOp $3 $2 & 0xFFFFFEFE
+  System::Call "user32::SetWindowLong(i $HWNDPARENT, i -20, i r3)"
+
+  ; Hide NSIS branding bar (control IDs 1028 and 1037)
+  GetDlgItem $4 $HWNDPARENT 1028
+  ShowWindow $4 0
+  GetDlgItem $4 $HWNDPARENT 1037
+  ShowWindow $4 0
+
+  ; Force frame change so Windows redraws without chrome
+  ; SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED = 0x27
+  System::Call "user32::SetWindowPos(i $HWNDPARENT, i 0, i 0, i 0, i 0, i 0, i 0x27)"
+FunctionEnd
+
 Function .onInit
   StrCpy $InstDir_ "$LOCALAPPDATA\Programs\HexBrief"
   System::Call "kernel32::IsWow64Process(i -1, *i .r0)"
