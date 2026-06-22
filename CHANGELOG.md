@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2] — 2026-06-22
+
+- Fixed installer layout — frameless window now renders correctly without clipped content
+- Draggable custom titlebar
+- New application icon — HB monogram, sharp at all sizes
+
 ## [1.0.1] — 2026-05-26
 
 - Full custom branded installer — dark navy sidebar on every screen, no Windows chrome

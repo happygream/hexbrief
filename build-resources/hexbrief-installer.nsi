@@ -39,28 +39,28 @@ UninstPage custom un.pg_Done_Show
 ; ================================================================
 !macro HB_Sidebar dragHandler
   ; Sidebar image (164u wide, full height)
-  ${NSD_CreateBitmap} 0u 0u 164u 100%u ""
+  ${NSD_CreateBitmap} 0u 0u 100u 100%u ""
   Pop $0
   ${NSD_SetImage} $0 "${MUI_WELCOMEFINISHPAGE_BITMAP}" $1
 
   ; Thin vertical divider between sidebar and content
-  ${NSD_CreateLabel} 163u 0u 1u 100%u ""
+  ${NSD_CreateLabel} 99u 0u 1u 100%u ""
   Pop $0
   SetCtlColors $0 "" "0x1a1f3a"
 
   ; Dark content area background
-  ${NSD_CreateLabel} 164u 0u 336u 100%u ""
+  ${NSD_CreateLabel} 100u 0u 200u 100%u ""
   Pop $0
   SetCtlColors $0 "" "0x080d1e"
 
   ; Titlebar strip (drag handle) across the very top
-  ${NSD_CreateLabel} 164u 0u 336u 12u ""
+  ${NSD_CreateLabel} 100u 0u 200u 12u ""
   Pop $R8
   SetCtlColors $R8 "" "0x05080f"
   ${NSD_OnClick} $R8 ${dragHandler}
 
   ; App name in titlebar
-  ${NSD_CreateLabel} 170u 1u 200u 10u "HexBrief Setup"
+  ${NSD_CreateLabel} 106u 1u 180u 10u "HexBrief Setup"
   Pop $0
   SetCtlColors $0 "0x4a5578" "0x05080f"
   CreateFont $R9 "Segoe UI" 7 400
@@ -73,7 +73,7 @@ UninstPage custom un.pg_Done_Show
 ; ================================================================
 !macro HB_Header title subtitle accentcol
   ; Header background strip (starts at 12u, below titlebar)
-  ${NSD_CreateLabel} 164u 12u 336u 52u ""
+  ${NSD_CreateLabel} 100u 12u 200u 52u ""
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "" "0x0d1f0d"
@@ -82,7 +82,7 @@ UninstPage custom un.pg_Done_Show
   !endif
 
   ; Title
-  ${NSD_CreateLabel} 178u 22u 300u 18u "${title}"
+  ${NSD_CreateLabel} 106u 22u 190u 18u "${title}"
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "0xa5d6a7" "0x0d1f0d"
@@ -93,7 +93,7 @@ UninstPage custom un.pg_Done_Show
   SendMessage $0 ${WM_SETFONT} $R9 0
 
   ; Subtitle
-  ${NSD_CreateLabel} 178u 44u 300u 12u "${subtitle}"
+  ${NSD_CreateLabel} 106u 44u 190u 12u "${subtitle}"
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "0x4a7a4a" "0x0d1f0d"
@@ -104,7 +104,7 @@ UninstPage custom un.pg_Done_Show
   SendMessage $0 ${WM_SETFONT} $R9 0
 
   ; Accent line below header
-  ${NSD_CreateLabel} 164u 64u 336u 2u ""
+  ${NSD_CreateLabel} 100u 64u 200u 2u ""
   Pop $0
   !if "${accentcol}" == "green"
     SetCtlColors $0 "" "0x4caf50"
@@ -124,19 +124,19 @@ Function pg_Welcome_Show
   !insertmacro HB_Sidebar OnDragTitlebar
   !insertmacro HB_Header "Welcome to HexBrief" "Personal morning dashboard installer" "red"
 
-  ${NSD_CreateLabel} 178u 76u 300u 14u "HexBrief is your personal morning dashboard."
+  ${NSD_CreateLabel} 106u 76u 190u 14u "HexBrief is your personal morning dashboard."
   Pop $0
   SetCtlColors $0 "0xf0f2f8" "0x080d1e"
   CreateFont $R9 "Segoe UI" 9 600
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 178u 94u 300u 40u "Weather, tasks, headlines and calendar in one place. No accounts. No tracking. No subscriptions."
+  ${NSD_CreateLabel} 106u 92u 190u 32u "Weather, tasks, headlines and calendar in one place. No accounts. No tracking. No subscriptions."
   Pop $0
   SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 178u 144u 300u 12u "Click Next to continue."
+  ${NSD_CreateLabel} 106u 128u 190u 12u "Click Next to continue."
   Pop $0
   SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
@@ -159,21 +159,21 @@ Function pg_Options_Show
   !insertmacro HB_Sidebar OnDragTitlebar
   !insertmacro HB_Header "Install location" "Choose where to install HexBrief" "red"
 
-  ${NSD_CreateLabel} 178u 76u 180u 12u "Destination folder:"
+  ${NSD_CreateLabel} 106u 76u 180u 12u "Destination folder:"
   Pop $0
   SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateDirRequest} 178u 92u 290u 14u "$InstDir_"
+  ${NSD_CreateDirRequest} 106u 92u 188u 14u "$InstDir_"
   Pop $hDirReq
 
-  ${NSD_CreateCheckbox} 180u 114u 280u 14u "Create desktop shortcut"
+  ${NSD_CreateCheckbox} 108u 114u 186u 14u "Create desktop shortcut"
   Pop $hDesktopCheck
   SetCtlColors $hDesktopCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hDesktopCheck ${BST_CHECKED}
 
-  ${NSD_CreateCheckbox} 180u 132u 280u 14u "Add to Start Menu"
+  ${NSD_CreateCheckbox} 108u 132u 186u 14u "Add to Start Menu"
   Pop $hStartCheck
   SetCtlColors $hStartCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hStartCheck ${BST_CHECKED}
@@ -199,18 +199,18 @@ Function pg_Install_Show
   !insertmacro HB_Sidebar OnDragTitlebar
   !insertmacro HB_Header "Installing..." "Please wait while files are extracted" "red"
 
-  ${NSD_CreateLabel} 178u 76u 300u 12u "Extracting application files:"
+  ${NSD_CreateLabel} 106u 76u 190u 12u "Extracting application files:"
   Pop $0
   SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateProgressBar} 178u 92u 290u 12u ""
+  ${NSD_CreateProgressBar} 106u 92u 188u 12u ""
   Pop $hProgress
   SendMessage $hProgress ${PBM_SETRANGE} 0 0x640000
   SendMessage $hProgress ${PBM_SETPOS} 0 0
 
-  ${NSD_CreateLabel} 178u 108u 290u 12u ""
+  ${NSD_CreateLabel} 106u 108u 188u 12u ""
   Pop $hLog
   SetCtlColors $hLog "0x5060a0" "0x080d1e"
   CreateFont $R9 "Courier New" 7 400
@@ -294,19 +294,19 @@ Function pg_Finish_Show
   !insertmacro HB_Sidebar OnDragTitlebar
   !insertmacro HB_Header "Installation complete" "HexBrief ${VERSION} is ready" "green"
 
-  ${NSD_CreateLabel} 178u 76u 300u 14u "Installed successfully."
+  ${NSD_CreateLabel} 106u 76u 190u 14u "Installed successfully."
   Pop $0
   SetCtlColors $0 "0xf0f2f8" "0x080d1e"
   CreateFont $R9 "Segoe UI" 9 600
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 178u 94u 300u 28u "Open it each morning for your daily brief."
+  ${NSD_CreateLabel} 106u 94u 190u 28u "Open it each morning for your daily brief."
   Pop $0
   SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateCheckbox} 180u 130u 280u 14u "Launch HexBrief now"
+  ${NSD_CreateCheckbox} 108u 130u 186u 14u "Launch HexBrief now"
   Pop $hLaunchCheck
   SetCtlColors $hLaunchCheck "0xf0f2f8" "0x080d1e"
   ${NSD_SetState} $hLaunchCheck ${BST_CHECKED}
@@ -330,13 +330,13 @@ Function un.pg_Confirm_Show
   !insertmacro HB_Sidebar un.OnDragTitlebar
   !insertmacro HB_Header "Uninstall HexBrief" "Remove HexBrief from your computer" "red"
 
-  ${NSD_CreateLabel} 178u 76u 300u 40u "This will remove HexBrief and all its files, including your saved settings, tasks and preferences."
+  ${NSD_CreateLabel} 106u 76u 190u 40u "This will remove HexBrief and all its files, including your saved settings, tasks and preferences."
   Pop $0
   SetCtlColors $0 "0x8a96bc" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
   SendMessage $0 ${WM_SETFONT} $R9 0
 
-  ${NSD_CreateLabel} 178u 122u 300u 12u "Click Uninstall to continue."
+  ${NSD_CreateLabel} 106u 122u 190u 12u "Click Uninstall to continue."
   Pop $0
   SetCtlColors $0 "0x5060a0" "0x080d1e"
   CreateFont $R9 "Segoe UI" 8 400
@@ -363,7 +363,7 @@ Function un.pg_Done_Show
   !insertmacro HB_Sidebar un.OnDragTitlebar
   !insertmacro HB_Header "Uninstall complete" "HexBrief has been removed" "green"
 
-  ${NSD_CreateLabel} 178u 76u 300u 14u "HexBrief has been removed from your computer."
+  ${NSD_CreateLabel} 106u 76u 190u 14u "HexBrief has been removed from your computer."
   Pop $0
   SetCtlColors $0 "0xf0f2f8" "0x080d1e"
   CreateFont $R9 "Segoe UI" 9 400
