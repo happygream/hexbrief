@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] — 2026-06-22
+
+- Streamlined one-click installer with branded install screen
+- Installs and launches automatically
+
 ## [1.0.2] — 2026-06-22
 
 - Fixed installer layout — frameless window now renders correctly without clipped content

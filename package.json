@@ -1,6 +1,6 @@
 {
   "name": "hexbrief",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Your personal morning dashboard",
   "author": {
     "name": "HexBrief",
@@ -66,9 +66,8 @@
       "icon": "build-resources/icon.ico"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "allowElevation": true,
+      "oneClick": true,
+      "perMachine": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "HexBrief",
@@ -79,12 +78,8 @@
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/installerSidebar.bmp",
       "deleteAppDataOnUninstall": true,
-      "menuCategory": "HexBrief",
-      "script": "build-resources/hexbrief-installer.nsi",
-      "warningsAsErrors": false,
-      "artifactName": "HexBrief-Setup-${version}-${arch}.exe",
-      "installerLanguages": ["en_US"],
-      "language": "1033"
+      "runAfterFinish": true,
+      "artifactName": "HexBrief-Setup-${version}-${arch}.exe"
     },
     "mac": {
       "target": [
