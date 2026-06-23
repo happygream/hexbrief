@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.4] — 2026-06-22
+
+- Custom window titlebar — replaces the default OS frame with a clean HexBrief bar
+- Draggable titlebar with native minimise, maximise and close controls
+
 ## [1.0.3] — 2026-06-22
 
 - Streamlined one-click installer with branded install screen

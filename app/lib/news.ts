@@ -7,15 +7,6 @@ export interface NewsItem {
   description?: string;
 }
 
-declare global {
-  interface Window {
-    electronAPI?: {
-      isElectron?: boolean;
-      fetchRSS?: (urls: string[]) => Promise<NewsItem[]>;
-    };
-  }
-}
-
 // Parse RSS XML in the browser (web fallback)
 function parseXML(xml: string, feedUrl: string): NewsItem[] {
   let sourceName = feedUrl;
@@ -110,7 +101,7 @@ export async function fetchAllFeeds(feedUrls: string[]): Promise<NewsItem[]> {
   // In Electron — use IPC (main process validates again server-side)
   if (typeof window !== 'undefined' && window.electronAPI?.fetchRSS) {
     try {
-      return await window.electronAPI.fetchRSS(validUrls);
+      return (await window.electronAPI.fetchRSS(validUrls)) as NewsItem[];
     } catch {}
   }
 

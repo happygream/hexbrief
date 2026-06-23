@@ -43,3 +43,23 @@ export interface Settings {
   focusDate: string;
   onboardingDone: boolean;
 }
+
+declare global {
+  interface Window {
+    electronAPI?: {
+      platform?: string;
+      isElectron?: boolean;
+      fetchRSS?: (urls: string[]) => Promise<unknown[]>;
+      setAutoStart?: (enable: boolean) => Promise<boolean>;
+      getAutoStart?: () => Promise<boolean>;
+      notify?: (title: string, body: string) => Promise<void>;
+      windowMinimize?: () => void;
+      windowMaximize?: () => void;
+      windowClose?: () => void;
+      windowIsMaximized?: () => Promise<boolean>;
+      onMaximizeChange?: (cb: (isMax: boolean) => void) => () => void;
+    };
+  }
+}
+
+export {};

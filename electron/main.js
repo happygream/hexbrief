@@ -212,6 +212,28 @@ ipcMain.handle('notify', (event, title, body) => {
   }
 });
 
+// ── WINDOW CONTROLS (custom frameless titlebar) ───────────────────────
+ipcMain.on('window-minimize', () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.on('window-maximize', () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
+});
+
+ipcMain.on('window-close', () => {
+  if (mainWindow) mainWindow.close();
+});
+
+ipcMain.handle('window-is-maximized', () => {
+  return mainWindow ? mainWindow.isMaximized() : false;
+});
+
 // ── WINDOW ────────────────────────────────────────────────────────────
 
 function createWindow() {
@@ -223,6 +245,9 @@ function createWindow() {
     minWidth: 960,
     minHeight: 640,
     backgroundColor: '#0a0f1e',
+    frame: false,                    // Custom titlebar — no OS chrome
+    titleBarStyle: 'hidden',         // macOS: hide bar but keep traffic lights inset
+    titleBarOverlay: false,
     autoHideMenuBar: true,
     menuBarVisible: false,
     webPreferences: {
@@ -246,6 +271,14 @@ function createWindow() {
   }
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
+
+  // Notify renderer when maximize state changes so titlebar icon updates
+  mainWindow.on('maximize', () => {
+    if (mainWindow) mainWindow.webContents.send('window-maximized-changed', true);
+  });
+  mainWindow.on('unmaximize', () => {
+    if (mainWindow) mainWindow.webContents.send('window-maximized-changed', false);
+  });
 
   // Block all new window creation — all external links go to system browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

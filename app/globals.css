@@ -80,3 +80,98 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { border-color: var(--red); }
 input::placeholder, textarea::placeholder { color: var(--dim); }
+
+/* ── CUSTOM FRAMELESS TITLEBAR (Electron only) ──────────────────── */
+.hb-titlebar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 38px;
+  background: var(--ink);
+  border-bottom: 1px solid var(--ink3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  user-select: none;
+}
+
+.hb-titlebar-drag {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
+  -webkit-app-region: drag;        /* whole left area drags the window */
+}
+
+.hb-titlebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hb-titlebar-logo {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--ink3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.hb-titlebar-logo-bar {
+  position: absolute;
+  top: 4px; left: 3px; right: 3px;
+  height: 1.5px;
+  background: var(--red);
+}
+.hb-titlebar-logo-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  font-weight: 400;
+  color: var(--paper);
+  margin-top: 2px;
+}
+
+.hb-titlebar-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dim);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.hb-titlebar-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;     /* buttons are clickable, not drag */
+}
+
+.hb-titlebar-btn {
+  width: 44px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+}
+.hb-titlebar-btn:hover {
+  background: var(--ink3);
+  color: var(--paper);
+}
+.hb-titlebar-close:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+/* Push app content below the fixed titlebar when present */
+body:has(.hb-titlebar) {
+  padding-top: 38px;
+}
